@@ -1,2 +1,3 @@
-# visualime
-Visual explanations for humans
+# VisuaLIME
+
+Visual explanations for humans.
