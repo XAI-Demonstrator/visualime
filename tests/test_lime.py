@@ -1,5 +1,6 @@
-from visualime.lime import generate_images, generate_samples
 import numpy as np
+
+from visualime.lime import generate_images, generate_samples
 
 
 def test_that_replacing_background_with_image_generates_original_image():

@@ -100,10 +100,10 @@ def generate_images(image: np.ndarray, segment_mask: np.ndarray, samples: np.nda
     -------
         An array of size (num_of_samples,
     """
-    binary_segment_mask = np.zeros(shape=(samples.shape[0], image.shape[0], image.shape[1]), dtype=np.int)
+    binary_segment_mask = np.zeros(shape=(samples.shape[0], image.shape[0], image.shape[1]), dtype=int)
 
     for k in range(binary_segment_mask.shape[0]):
-        binary_segment_mask[k, :, :] = np.isin(segment_mask, np.nonzero(samples[k])).astype(np.int)
+        binary_segment_mask[k, :, :] = np.isin(segment_mask, np.nonzero(samples[k])).astype(int)
 
     images = binary_segment_mask[:, :, :, None] * image
 
