@@ -1,13 +1,12 @@
 import numpy as np
 
 
-@traced
 def generate_visual_explanation(weighted_segments: np.ndarray, segment_mask: np.ndarray, image: np.ndarray,
-                                threshold: float, volume: int, colour: str, transparency:float = 0) -> np.ndarray:
+                                threshold: float, volume: int, colour: str, transparency: float = 0) -> np.ndarray:
     """Generating image with visual explanation
     Parameters
     ----------
-    weighted_segment
+    weighted_segments
     segment_mask
     image
     threshold
@@ -18,7 +17,7 @@ def generate_visual_explanation(weighted_segments: np.ndarray, segment_mask: np.
     -------
     """
     # set explanation colour
-    colours = {"green": [0,255,0], "blue": [38, 55, 173], "red": [173, 38, 38], "white": [255, 255, 255],
+    colours = {"green": [0, 255, 0], "blue": [38, 55, 173], "red": [173, 38, 38], "white": [255, 255, 255],
                "black": [0, 0, 0], "violet": [215, 102, 255]}
     colour = colour.lower()
     if colour not in colours.keys():
@@ -32,7 +31,7 @@ def generate_visual_explanation(weighted_segments: np.ndarray, segment_mask: np.
     n_weighted_segments = (weighted_segments - weighted_segments.min()) / (
             weighted_segments.max() - weighted_segments.min())
     """
-    n_weighted_segments = 1/(1+np.exp(-weighted_segments))
+    n_weighted_segments = 1 / (1 + np.exp(-weighted_segments))
 
     # check if volume is bigger than the amount of segments
     max_volume = len(np.unique(segment_mask))
@@ -53,4 +52,4 @@ def generate_visual_explanation(weighted_segments: np.ndarray, segment_mask: np.
             if el in indices:
                 image_c[i, j] = ((round(n_d_weighted_segments[el], 1) * c / 127.5) - 1)
 
-    return image_c * transparency + image * (1-transparency)
+    return image_c * transparency + image * (1 - transparency)

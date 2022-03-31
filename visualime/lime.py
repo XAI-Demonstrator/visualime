@@ -1,9 +1,12 @@
 from typing import Dict
 
 import numpy as np
+from skimage.color import rgb2gray
+from skimage.filters import sobel
+from skimage.segmentation import felzenszwalb, slic, quickshift, watershed
+from sklearn.linear_model import BayesianRidge, Lasso, LinearRegression
 
 
-@traced
 def create_segments(img: np.ndarray, seg_method: str, settings: Dict) -> np.ndarray:
     """
     create segments out of a loaded picture using different methods and settings
@@ -34,7 +37,6 @@ def create_segments(img: np.ndarray, seg_method: str, settings: Dict) -> np.ndar
         raise ValueError("{} is not a valid segmentation method".format(seg_method))
 
 
-@traced
 def generate_samples(segment_mask: np.ndarray, num_of_samples: int, p: float) -> np.ndarray:
     """
     determine which segments are displayed for each sample
@@ -58,7 +60,6 @@ def generate_samples(segment_mask: np.ndarray, num_of_samples: int, p: float) ->
                      org_img_sample, axis=0)
 
 
-@traced
 def generate_images(image: np.ndarray, segment_mask: np.ndarray, samples: np.ndarray) -> np.ndarray:
     """Generating example images with each excluded segments in black
     Parameters
@@ -76,8 +77,7 @@ def generate_images(image: np.ndarray, segment_mask: np.ndarray, samples: np.nda
     return res.reshape((samples.shape[0], segment_mask.shape[0], segment_mask.shape[0], 1)) * image
 
 
-@traced
-def predict_images(images: np.ndarray, model_: tf.keras.models.Model) -> np.ndarray:
+def predict_images(images: np.ndarray, model_) -> np.ndarray:
     """
     Parameters
     ----------
@@ -92,7 +92,6 @@ def predict_images(images: np.ndarray, model_: tf.keras.models.Model) -> np.ndar
     return model_.predict(images, batch_size=settings.batch_size)
 
 
-@traced
 def weigh_segments(samples: np.ndarray, predictions: np.ndarray) -> np.ndarray:
     """Generating list of coefficients to weigh segments
     Parameters
