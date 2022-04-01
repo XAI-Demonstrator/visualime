@@ -70,7 +70,7 @@ def explain_classification(
 
     """
     if label_idx is None:
-        label_idx = int(np.argmax(predict_fn(image.reshape(1, -1))))
+        label_idx = int(np.argmax(predict_fn(image[None, :, :, :])))
 
     segment_mask = create_segments(
         image=image,
@@ -93,7 +93,7 @@ def explain_classification(
     return segment_mask, segment_weights
 
 
-def generate_visual_explanation(
+def render_explanation(
     image: np.ndarray,
     segment_mask: np.ndarray,
     segment_weights: np.ndarray,
