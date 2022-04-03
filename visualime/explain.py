@@ -8,9 +8,10 @@ from .lime import (
     generate_samples,
     generate_images,
     predict_images,
+    image_distances,
     weigh_segments,
 )
-from .visualize import select_segments, generate_overlay
+from .visualize import select_segments, generate_overlay, scale_opacity
 
 
 def explain_classification(
@@ -22,7 +23,8 @@ def explain_classification(
     num_of_samples: int = 64,
     p: float = 0.33,
 ) -> Tuple[np.ndarray, np.ndarray]:
-    """
+    """Explain why the classifier called through `predict_fn` classifies the `image` into
+    a particular class using the LIME algorithm.
 
     For more detailed control, we recommend you create your own function, using this
     function as a template.
@@ -86,8 +88,10 @@ def explain_classification(
 
     predictions = predict_images(images=images, predict_fn=predict_fn)
 
+    distances = image_distances(image=image, images=images)
+
     segment_weights = weigh_segments(
-        samples=samples, predictions=predictions, label_idx=label_idx
+        samples=samples, predictions=predictions, label_idx=label_idx, distances=distances
     )
 
     return segment_mask, segment_weights
@@ -153,6 +157,12 @@ def render_explanation(
         positive_overlay = generate_overlay(
             segment_mask, positive_segments, color=positive, opacity=opacity
         )
+
+        positive_overlay = scale_opacity(overlay=positive_overlay,
+                                         segment_weights=segment_weights,
+                                         segment_mask=segment_mask,
+                                         segments_to_color=positive_segments)
+
         overlay_image = Image.fromarray(positive_overlay.astype(np.int8), "RGBA")
         final_img.alpha_composite(overlay_image)
 
@@ -163,6 +173,12 @@ def render_explanation(
         negative_overlay = generate_overlay(
             segment_mask, negative_segments, color=negative, opacity=opacity
         )
+
+        negative_overlay = scale_opacity(overlay=negative_overlay,
+                                         segment_weights=segment_weights,
+                                         segment_mask=segment_mask,
+                                         segments_to_color=negative_segments)
+
         overlay_image = Image.fromarray(negative_overlay.astype(np.int8), "RGBA")
         final_img.alpha_composite(overlay_image)
 
