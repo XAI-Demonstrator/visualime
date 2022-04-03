@@ -11,6 +11,12 @@ It was written to produce stable, reliable, and expressive explanations at scale
 
 ## Getting Started
 
+To install _VisuaLIME_, run:
+
+```shell
+pip install visualime
+```
+
 _VisuaLIME_ provides two functions that package its building blocks into a reference explanation
 pipeline:
 
