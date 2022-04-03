@@ -42,4 +42,4 @@ jobs:
       - name: Run unit tests with pytest
         run: |
           pip install -r requirements-test.txt
-          pytest -v tests/
+          pytest -v --cov visualime tests/
