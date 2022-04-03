@@ -1,5 +1,13 @@
-.idea/
-.coverage
+# test artifacts
 **/.pytest_cache/**
+.coverage
+
+# build artifacts
+dist/
+visualime.egg-info/
+
+# dev artifacts
+.idea/
 **/__pycache__/**
 **/.ipynb_checkpoints/**
+
