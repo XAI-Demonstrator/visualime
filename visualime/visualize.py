@@ -3,14 +3,14 @@ from typing import Union, Tuple, List, Optional
 
 
 def select_segments(
-        segment_weights: np.ndarray,
-        segment_mask: np.ndarray,
-        coverage: Optional[float] = None,
-        num_of_segments: Optional[int] = None,
-        min_coverage: float = 0.0,
-        max_coverage: float = 1.0,
-        min_num_of_segments: int = 0,
-        max_num_of_segments: Optional[int] = None,
+    segment_weights: np.ndarray,
+    segment_mask: np.ndarray,
+    coverage: Optional[float] = None,
+    num_of_segments: Optional[int] = None,
+    min_coverage: float = 0.0,
+    max_coverage: float = 1.0,
+    min_num_of_segments: int = 0,
+    max_num_of_segments: Optional[int] = None,
 ) -> np.ndarray:
     """Select the segments to color by selecting segments in the order of descending weight until
     the specified coverage or number of segments is reached.
@@ -161,7 +161,7 @@ def generate_overlay(
         An array that contains the integer segment numbers of the segments to color.
         Usually obtained through `select_segments()`.
 
-    color : str or int 3-tuple (RGB)
+    color : {str, 3-tuple of ints}
         The color for the segments.
         Can be a pre-defined color name or an RGB tuple.
 
@@ -180,7 +180,36 @@ def generate_overlay(
 
 # TODO: Add a function to set the opacity according to segment weights
 
-# TODO: Add a function to re-scale and/or normalize the segments weights
+
+def scale_opacity(
+    overlay: np.ndarray,
+    segment_weights: np.ndarray,
+    segment_mask: np.ndarray,
+    segments_to_color: Union[np.ndarray, List[int]],
+    relative_to: Union[str, float] = "max",
+) -> np.ndarray:
+    rescaled_weights = np.abs(segment_weights / np.linalg.norm(segment_weights))
+
+    if relative_to == "max":
+        reference = np.max(rescaled_weights)
+    elif isinstance(relative_to, float):
+        reference = max(0.0, min(relative_to, 1.0))
+    else:
+        raise ValueError(f"Invalid value '{relative_to}' for 'relative_to'.")
+
+    # TODO: allow different scaling (e.g., quadratic, logarithmic)
+    new_opacity = 255 * rescaled_weights/reference
+
+    new_overlay = np.ndarray.copy(overlay)
+
+    for segment_id in segments_to_color:
+        mask = segment_mask == segment_id
+        new_overlay[mask, 3] = new_opacity[segment_id]
+
+    return new_overlay
+
+
+# TODO: Add more functions to re-scale and/or normalize the segments weights, deal with outliers etc.
 
 def smooth_weights(segment_weights: np.ndarray) -> np.ndarray:
     """
