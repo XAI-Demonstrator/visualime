@@ -5,7 +5,7 @@ for image classifiers created as part of the
 [XAI Demonstrator project](https://github.com/XAI-Demonstrator/xai-demonstrator).
 
 In contrast to the [reference implementation](https://github.com/marcotcr/lime), _VisuaLIME_
-exclusively supports image classification and allows its users control full control over the
+exclusively supports image classification and allows its users full control over the
 properties of the generated explanations.
 It was written to produce stable, reliable, and expressive explanations at scale.
 
