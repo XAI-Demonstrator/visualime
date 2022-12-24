@@ -5,11 +5,15 @@ for image classifiers created as part of the
 [XAI Demonstrator project](https://github.com/XAI-Demonstrator/xai-demonstrator).
 
 In contrast to the [reference implementation](https://github.com/marcotcr/lime), _VisuaLIME_
-exclusively supports image classification and allows its users full control over the
+exclusively supports image classification and gives its users full control over the
 properties of the generated explanations.
 It was written to produce stable, reliable, and expressive explanations at scale.
 
 ## Getting Started
+
+💡 _If you're new to_ LIME, _you might want to check out the_
+[Grokking LIME](https://github.com/ionicsolutions/grokking-lime)
+_talk/tutorial for a general introduction prior to diving into_ VisuaLIME.
 
 To install _VisuaLIME_, run:
 
@@ -21,11 +25,12 @@ _VisuaLIME_ provides two functions that package its building blocks into a refer
 pipeline:
 
 ```python
+import numpy as np
 from visualime.explain import explain_classification, render_explanation
 
 image = ...  # a numpy array of shape (width, height, 3) representing an RGB image
 
-def predict_fn(images): 
+def predict_fn(images: np.ndarray) -> np.ndarray: 
     # a function that takes a numpy array of shape (num_of_samples, width, height, 3)
     # representing num_of_samples RGB images and returns a numpy array of
     # shape (num_of_samples, num_of_classes) where each entry corresponds to the
@@ -55,9 +60,9 @@ For a full example, see
 - Add performance benchmarks and optimize implementation of the algorithm
 - Include utilities to assess and tune explanations for stability and truthfulness
 - Provide a best practice example of implementing a fully configurable LIME explainer
+- Add support for BayLIME
 
 ## References
 
 [1] Ribeiro et al.: _"Why Should I Trust You?": Explaining the Predictions of Any Classifier_
     ([arXiv:1602.04938](https://arxiv.org/abs/1602.04938), 2016)
-
