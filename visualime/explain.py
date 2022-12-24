@@ -81,6 +81,8 @@ def explain_classification(
     --------
     #TODO: Add end-to-end example
     """
+    model_type = "bayesian_ridge"
+
     if label_idx is None:
         label_idx = int(np.argmax(predict_fn(image[None, :, :, :])))
 
@@ -107,6 +109,7 @@ def explain_classification(
             samples=samples,
             predictions=predictions,
             label_idx=label_idx,
+            model_type=model_type,
             num_segments_to_select=num_segments_to_select,
         )
     elif segment_selection_method == "forward_selection":
@@ -114,6 +117,7 @@ def explain_classification(
             samples=samples,
             predictions=predictions,
             label_idx=label_idx,
+            model_type=model_type,
             num_segments_to_select=num_segments_to_select,
         )
     else:
@@ -125,6 +129,7 @@ def explain_classification(
         samples=samples,
         predictions=predictions,
         label_idx=label_idx,
+        model_type=model_type,
         distances=distances,
         segment_subset=segment_subset,
     )
