@@ -41,7 +41,7 @@ def select_by_weight(
     return list(np.argsort(-np.abs(segment_weights))[:num_segments_to_select])
 
 
-select_by_weight.__doc__ = f"""Select the `num_segments_to_select` with the highest weight.
+select_by_weight.__doc__ = f"""Select the `num_segments_to_select` segments with the highest weight.
 
     Parameters
     ----------
@@ -171,23 +171,7 @@ def lars_selection(
     return list(segments_with_nonzero_coefficients)
 
 
-lars_selection.__doc__ = (
-    f"""Select up to `num_segments_to_select` segments using the LARS path method.
-
-    Parameters
-    ----------
-    {SAMPLES_PREDICTIONS_LABEL_IDX_DOC}
-
-    num_segments_to_select : int, optional
-        The maximum number of segments to select.
-
-    Returns
-    -------
-    selected_segments: List[int]
-        List of the indices of the selected segments.
-
-    """
-    f"""Select up to `num_segments_to_select` segments using the LARS path method.
+lars_selection.__doc__ = f"""Select up to `num_segments_to_select` segments using the LARS path method.
 
     Parameters
     ----------
@@ -204,4 +188,3 @@ lars_selection.__doc__ = (
         The segment indices are in ascending order.
 
     """
-)
