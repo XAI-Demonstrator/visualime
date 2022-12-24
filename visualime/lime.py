@@ -106,11 +106,12 @@ def create_segments(
 
     Returns
     -------
-    A numpy array of shape (image_width, image_height) where each entry is an integer
-    that corresponds to the segment number.
+    segment_mask : np.ndarray
+        An array of shape `(image_width, image_height)` where each entry is an integer
+        that corresponds to the segment number.
 
-    Segment numbers start at 0 and are continuous. The number of segments can be computed
-    by determining the maximum value in the array and adding 1.
+        Segment numbers start at 0 and are continuous. The number of segments can be computed
+        by determining the maximum value in the array and adding 1.
     """
     segmentation_settings = segmentation_settings or {}
 
@@ -148,7 +149,7 @@ def generate_samples(
     Returns
     -------
     samples : np.ndarray
-        A two-dimensional array of size (num_of_samples, num_of_segments).
+        A two-dimensional array of shape `(num_of_samples, num_of_segments)`.
     """
     num_of_segments = int(np.max(segment_mask) + 1)
 
@@ -181,7 +182,8 @@ def generate_images(
 
     Returns
     -------
-        An array of shape (num_of_samples, image_width, image_height, 3).
+    images : np.ndarray
+        An array of size `(num_of_samples, image_width, image_height, 3)`.
     """
     binary_segment_mask = np.zeros(
         shape=(samples.shape[0], image.shape[0], image.shape[1]), dtype=np.int8
@@ -222,7 +224,8 @@ def predict_images(
 
     Returns
     -------
-    An array of size (num_of_samples, num_of_classes).
+    prediction : np.ndarray
+        An array of shape `(num_of_samples, num_of_classes)`.
     """
     return predict_fn(images)
 
@@ -264,6 +267,8 @@ def image_distances(
 
     Returns
     -------
+    distances : np.ndarray
+        Array of length `images.shape[0]` containing the distances of each image to the original image.
 
     """
     distances_per_channel = np.linalg.norm(images - image, axis=(1, 2), ord=norm)
@@ -283,28 +288,6 @@ def weigh_segments(
     distances: Optional[np.ndarray] = None,
     segment_subset: Optional[List[int]] = None,
 ) -> np.ndarray:
-    f"""Generating list of coefficients to weigh segments
-
-    Parameters
-    ----------
-    {SAMPLES_PREDICTIONS_LABEL_IDX_DOC}
-
-    {MODEL_TYPE_DOC}
-
-    {DISTANCES_DOC}
-
-    segment_subset : list of int, optional
-        List of the indices of the segments to consider when fitting the linear model.
-        Note that the resulting array will nevertheless have length `num_of_segments`.
-        The weights of segments not in `segment_subset` will be `0.0`.
-
-        If not given, all segments will be used.
-
-    Returns
-    -------
-    Array of length `num_of_segments` where each entry corresponds to the segment's coefficient
-    in the fitted linear model.
-    """
     try:
         linear_model = LINEAR_MODELS[model_type]()
     except KeyError:
@@ -330,7 +313,7 @@ def weigh_segments(
 
     reduced_weights = list(linear_model.coef_)
 
-    expanded_weights = np.array(
+    segment_weights = np.array(
         [
             reduced_weights[segment_subset.index(feature_idx)]
             if feature_idx in segment_subset
@@ -339,4 +322,30 @@ def weigh_segments(
         ]
     )
 
-    return expanded_weights
+    return segment_weights
+
+
+weigh_segments.__doc__ = f"""Generating list of coefficients to weigh segments
+
+    Parameters
+    ----------
+    {SAMPLES_PREDICTIONS_LABEL_IDX_DOC}
+
+    {MODEL_TYPE_DOC}
+
+    {DISTANCES_DOC}
+
+    segment_subset : list of int, optional
+        List of the indices of the segments to consider when fitting the linear model.
+        Note that the resulting array will nevertheless have length `num_of_segments`.
+        The weights of segments not in `segment_subset` will be `0.0`.
+
+        If not given, all segments will be used.
+
+    Returns
+    -------
+    segment_weights : np.ndarray
+        Array of length `num_of_segments` where each entry corresponds to the segment's coefficient
+        in the fitted linear model.
+        
+    """

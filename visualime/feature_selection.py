@@ -6,7 +6,7 @@ from sklearn.linear_model import lars_path
 from .lime import weigh_segments, default_distance, LINEAR_MODELS, SAMPLES_PREDICTIONS_LABEL_IDX_DOC, MODEL_TYPE_DOC, DISTANCES_DOC
 
 
-def highest_weight(
+def select_by_weight(
     samples: np.ndarray,
     predictions: np.ndarray,
     label_idx: int,
@@ -14,26 +14,6 @@ def highest_weight(
     distances: Optional[np.ndarray] = None,
     num_segments_to_select: Optional[int] = None,
 ) -> List[int]:
-    f"""Select the `num_segments_to_select` with the highest weight.
-
-    Parameters
-    ----------
-    {SAMPLES_PREDICTIONS_LABEL_IDX_DOC}
-    
-    {MODEL_TYPE_DOC}
-    
-        It is generally advisable to use the same model as for the final `weigh_segments()` function.
-    
-    {DISTANCES_DOC}
-    
-    num_segments_to_select : int, optional
-        The number of segments to select.
-
-    Returns
-    -------
-    List of the indices of the selected segments.
-    
-    """
     num_segments = samples.shape[1]
     num_segments_to_select = num_segments_to_select or num_segments
     if num_segments_to_select > num_segments:
@@ -54,15 +34,7 @@ def highest_weight(
     return list(np.argsort(-np.abs(segment_weights))[:num_segments_to_select])
 
 
-def forward_selection(
-    samples: np.ndarray,
-    predictions: np.ndarray,
-    label_idx: int,
-    model_type: str = "ridge",
-    distances: Optional[np.ndarray] = None,
-    num_segments_to_select: Optional[int] = None,
-) -> List[int]:
-    f"""Select `num_segments_to_select` through forward selection.
+select_by_weight.__doc__ = f"""Select the `num_segments_to_select` with the highest weight.
 
     Parameters
     ----------
@@ -73,15 +45,27 @@ def forward_selection(
         It is generally advisable to use the same model as for the final `weigh_segments()` function.
     
     {DISTANCES_DOC}
-      
+    
     num_segments_to_select : int, optional
-        The number of segments to select.
+        The number of segments to select. If not given, select all segments.
 
     Returns
     -------
-    List of the indices of the selected segments.
-
+    selected_segments : List[int]
+        List of the indices of the selected segments.
+        Segments are ordered by descending weight.
+    
     """
+
+
+def forward_selection(
+    samples: np.ndarray,
+    predictions: np.ndarray,
+    label_idx: int,
+    model_type: str = "ridge",
+    distances: Optional[np.ndarray] = None,
+    num_segments_to_select: Optional[int] = None,
+) -> List[int]:
     num_segments = samples.shape[1]
     num_segments_to_select = num_segments_to_select or num_segments
     if num_segments_to_select > num_segments:
@@ -124,6 +108,29 @@ def forward_selection(
 
     return selected_segments
 
+forward_selection.__doc__ = f"""Select `num_segments_to_select` through forward selection.
+
+    Parameters
+    ----------
+    {SAMPLES_PREDICTIONS_LABEL_IDX_DOC}
+    
+    {MODEL_TYPE_DOC}
+    
+        It is generally advisable to use the same model as for the final `weigh_segments()` function.
+    
+    {DISTANCES_DOC}
+      
+    num_segments_to_select : int, optional
+        The number of segments to select. If not given, select all segments.
+
+    Returns
+    -------
+    selected_segments : List[int]
+        List of the indices of the selected segments.
+        The segments are ordered as they were selected.
+
+"""
+
 
 def lars_selection(
     samples: np.ndarray,
@@ -131,20 +138,6 @@ def lars_selection(
     label_idx: int,
     num_segments_to_select: Optional[int] = None,
 ) -> List[int]:
-    f"""Select up to `num_segments_to_select` segments using the LARS path method.
-
-    Parameters
-    ----------
-    {SAMPLES_PREDICTIONS_LABEL_IDX_DOC}
-    
-    num_segments_to_select : int, optional
-        The maximum number of segments to select.
-
-    Returns
-    -------
-    List of the indices of the selected segments.
-
-    """
     num_segments = samples.shape[1]
     num_segments_to_select = num_segments_to_select or num_segments
     if num_segments_to_select > num_segments:
@@ -167,3 +160,36 @@ def lars_selection(
         )
 
     return list(segments_with_nonzero_coefficients)
+
+
+lars_selection.__doc__ = f"""Select up to `num_segments_to_select` segments using the LARS path method.
+
+    Parameters
+    ----------
+    {SAMPLES_PREDICTIONS_LABEL_IDX_DOC}
+
+    num_segments_to_select : int, optional
+        The maximum number of segments to select.
+
+    Returns
+    -------
+    selected_segments: List[int]
+        List of the indices of the selected segments.
+
+    """f"""Select up to `num_segments_to_select` segments using the LARS path method.
+
+    Parameters
+    ----------
+    {SAMPLES_PREDICTIONS_LABEL_IDX_DOC}
+    
+    num_segments_to_select : int, optional
+        The maximum number of segments to select.
+        If not given, this value is set to the total number of segments.
+
+    Returns
+    -------
+    selected_segments: List[int]
+        List of the indices of the selected segments.
+        The segment indices are in ascending order.
+
+    """
