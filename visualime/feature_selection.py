@@ -3,7 +3,14 @@ from typing import Optional, List
 import numpy as np
 from sklearn.linear_model import lars_path
 
-from .lime import weigh_segments, default_distance, LINEAR_MODELS, SAMPLES_PREDICTIONS_LABEL_IDX_DOC, MODEL_TYPE_DOC, DISTANCES_DOC
+from .lime import (
+    weigh_segments,
+    default_distance,
+    LINEAR_MODELS,
+    SAMPLES_PREDICTIONS_LABEL_IDX_DOC,
+    MODEL_TYPE_DOC,
+    DISTANCES_DOC,
+)
 
 
 def select_by_weight(
@@ -74,7 +81,8 @@ def forward_selection(
             f"number of features in data ({num_segments})"
         )
 
-    distances = distances or default_distance(samples)
+    if distances is None:
+        distances = default_distance(samples)
 
     try:
         linear_model = LINEAR_MODELS[model_type](alpha=0, fit_intercept=True)
@@ -107,6 +115,7 @@ def forward_selection(
         selected_segments.append(segment_with_highest_score)
 
     return selected_segments
+
 
 forward_selection.__doc__ = f"""Select `num_segments_to_select` through forward selection.
 
@@ -162,7 +171,8 @@ def lars_selection(
     return list(segments_with_nonzero_coefficients)
 
 
-lars_selection.__doc__ = f"""Select up to `num_segments_to_select` segments using the LARS path method.
+lars_selection.__doc__ = (
+    f"""Select up to `num_segments_to_select` segments using the LARS path method.
 
     Parameters
     ----------
@@ -176,7 +186,8 @@ lars_selection.__doc__ = f"""Select up to `num_segments_to_select` segments usin
     selected_segments: List[int]
         List of the indices of the selected segments.
 
-    """f"""Select up to `num_segments_to_select` segments using the LARS path method.
+    """
+    f"""Select up to `num_segments_to_select` segments using the LARS path method.
 
     Parameters
     ----------
@@ -193,3 +204,4 @@ lars_selection.__doc__ = f"""Select up to `num_segments_to_select` segments usin
         The segment indices are in ascending order.
 
     """
+)

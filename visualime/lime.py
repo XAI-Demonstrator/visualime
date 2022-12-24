@@ -295,7 +295,8 @@ def weigh_segments(
             f"Unknown model_type '{model_type}'. Available options: {list(LINEAR_MODELS.keys())}"
         )
 
-    distances = distances or default_distance(samples)
+    if distances is None:
+        distances = default_distance(samples)
 
     if segment_subset is not None:
         if min(segment_subset) < 0:
@@ -305,6 +306,7 @@ def weigh_segments(
         reduced_samples = samples[:, segment_subset]
     else:
         reduced_samples = samples
+        segment_subset = list(range(samples.shape[1]))
 
     # TODO: Make configurable
     linear_model.fit(
