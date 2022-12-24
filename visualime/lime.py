@@ -1,10 +1,10 @@
-from typing import Dict, Callable, Any, Optional, Union, List
+from typing import Any, Callable, Dict, List, Optional, Union
 
 import numpy as np
 from skimage.color import rgb2gray
 from skimage.filters import sobel
-from skimage.segmentation import felzenszwalb, slic, quickshift, watershed
-from sklearn.linear_model import Ridge, BayesianRidge, Lasso, LinearRegression
+from skimage.segmentation import felzenszwalb, quickshift, slic, watershed
+from sklearn.linear_model import BayesianRidge, Lasso, LinearRegression, Ridge
 
 SAMPLES_PREDICTIONS_LABEL_IDX_DOC = """
     samples : np.ndarray
@@ -30,7 +30,8 @@ MODEL_TYPE_DOC = """
         The type of linear model to fit.
         Available options are `"bayesian_ridge"`, `"lasso"`, and `"linear_regression"`.
 
-        See [the `scikit-learn` documentation](https://scikit-learn.org/stable/modules/classes.html#module-sklearn.linear_model)
+        See the
+        [`scikit-learn` documentation](https://scikit-learn.org/stable/modules/classes.html#module-sklearn.linear_model)
         for details on each of the methods.
 """
 
@@ -83,7 +84,8 @@ def create_segments(
     Which method and settings are appropriate is highly use-case specific.
 
     For an introduction into image segmentation and a comparison of the different methods, see
-    [this tutorial in the `scikit-learn` documentation](https://scikit-image.org/docs/stable/auto_examples/segmentation/plot_segmentations.html).
+    [this tutorial](https://scikit-image.org/docs/stable/auto_examples/segmentation/plot_segmentations.html)
+    in the `scikit-learn` documentation.
 
     Parameters
     ----------
@@ -349,5 +351,5 @@ weigh_segments.__doc__ = f"""Generating list of coefficients to weigh segments
     segment_weights : np.ndarray
         Array of length `num_of_segments` where each entry corresponds to the segment's coefficient
         in the fitted linear model.
-        
+
     """

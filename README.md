@@ -30,12 +30,12 @@ from visualime.explain import explain_classification, render_explanation
 
 image = ...  # a numpy array of shape (width, height, 3) representing an RGB image
 
-def predict_fn(images: np.ndarray) -> np.ndarray: 
+def predict_fn(images: np.ndarray) -> np.ndarray:
     # a function that takes a numpy array of shape (num_of_samples, width, height, 3)
     # representing num_of_samples RGB images and returns a numpy array of
     # shape (num_of_samples, num_of_classes) where each entry corresponds to the
     # classifiers output for the respective image
-    predictions = ...  
+    predictions = ...
     return predictions
 
 segment_mask, segment_weights = explain_classification(image, predict_fn)

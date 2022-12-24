@@ -1,18 +1,18 @@
-from typing import Dict, Optional, Union, Tuple, Callable, Any
+from typing import Any, Callable, Dict, Optional, Tuple, Union
 
 import numpy as np
 from PIL import Image
 
+from .feature_selection import forward_selection, select_by_weight
 from .lime import (
     create_segments,
-    generate_samples,
     generate_images,
-    predict_images,
+    generate_samples,
     image_distances,
+    predict_images,
     weigh_segments,
 )
-from .visualize import select_segments, generate_overlay, scale_opacity
-from .feature_selection import select_by_weight, forward_selection
+from .visualize import generate_overlay, scale_opacity, select_segments
 
 
 def explain_classification(
@@ -122,7 +122,7 @@ def explain_classification(
         )
     else:
         raise ValueError(
-            f"Segment selection method has to be either 'by_weight' or 'forward_selection'."
+            "Segment selection method has to be either 'by_weight' or 'forward_selection'."
         )
 
     segment_weights = weigh_segments(

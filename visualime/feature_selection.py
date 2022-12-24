@@ -1,15 +1,15 @@
-from typing import Optional, List
+from typing import List, Optional
 
 import numpy as np
 from sklearn.linear_model import lars_path
 
 from .lime import (
-    weigh_segments,
-    default_distance,
-    LINEAR_MODELS,
-    SAMPLES_PREDICTIONS_LABEL_IDX_DOC,
-    MODEL_TYPE_DOC,
     DISTANCES_DOC,
+    LINEAR_MODELS,
+    MODEL_TYPE_DOC,
+    SAMPLES_PREDICTIONS_LABEL_IDX_DOC,
+    default_distance,
+    weigh_segments,
 )
 
 
@@ -46,13 +46,13 @@ select_by_weight.__doc__ = f"""Select the `num_segments_to_select` with the high
     Parameters
     ----------
     {SAMPLES_PREDICTIONS_LABEL_IDX_DOC}
-    
+
     {MODEL_TYPE_DOC}
-    
+
         It is generally advisable to use the same model as for the final `weigh_segments()` function.
-    
+
     {DISTANCES_DOC}
-    
+
     num_segments_to_select : int, optional
         The number of segments to select. If not given, select all segments.
 
@@ -61,7 +61,7 @@ select_by_weight.__doc__ = f"""Select the `num_segments_to_select` with the high
     selected_segments : List[int]
         List of the indices of the selected segments.
         Segments are ordered by descending weight.
-    
+
     """
 
 
@@ -122,13 +122,13 @@ forward_selection.__doc__ = f"""Select `num_segments_to_select` through forward 
     Parameters
     ----------
     {SAMPLES_PREDICTIONS_LABEL_IDX_DOC}
-    
+
     {MODEL_TYPE_DOC}
-    
+
         It is generally advisable to use the same model as for the final `weigh_segments()` function.
-    
+
     {DISTANCES_DOC}
-      
+
     num_segments_to_select : int, optional
         The number of segments to select. If not given, select all segments.
 
@@ -192,7 +192,7 @@ lars_selection.__doc__ = (
     Parameters
     ----------
     {SAMPLES_PREDICTIONS_LABEL_IDX_DOC}
-    
+
     num_segments_to_select : int, optional
         The maximum number of segments to select.
         If not given, this value is set to the total number of segments.
