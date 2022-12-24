@@ -12,6 +12,7 @@ from .lime import (
     weigh_segments,
 )
 from .visualize import select_segments, generate_overlay, scale_opacity
+from .feature_selection import select_by_weight, forward_selection
 
 
 def explain_classification(
@@ -22,6 +23,8 @@ def explain_classification(
     segmentation_settings: Optional[Dict[str, Any]] = None,
     num_of_samples: int = 64,
     p: float = 0.33,
+    segment_selection_method: str = "by_weight",
+    num_segments_to_select: Optional[int] = 0,
 ) -> Tuple[np.ndarray, np.ndarray]:
     """Explain why the classifier called through `predict_fn` classifies the `image` into
     a particular class using the LIME algorithm.
@@ -58,6 +61,14 @@ def explain_classification(
     p : float, default 0.33
         The probability of a segment to be replaced in a sample.
 
+    segment_selection_method : str, default "by_weight"
+        The segment selection method.
+        Possible choices are "by_weight" and "forward_selection".
+
+    num_segments_to_select : int, optional
+        The number of segments to be considered when fitting the linear model to determine the `segment_weights`.
+        If not given, half of the generated segments are selected.
+
     Returns
     -------
     segment_mask : np.ndarray
@@ -89,8 +100,33 @@ def explain_classification(
 
     distances = image_distances(image=image, images=images)
 
+    num_segments_to_select = num_segments_to_select or int(samples.shape[1] / 2)
+
+    if segment_selection_method == "by_weight":
+        segment_subset = select_by_weight(
+            samples=samples,
+            predictions=predictions,
+            label_idx=label_idx,
+            num_segments_to_select=num_segments_to_select,
+        )
+    elif segment_selection_method == "forward_selection":
+        segment_subset = forward_selection(
+            samples=samples,
+            predictions=predictions,
+            label_idx=label_idx,
+            num_segments_to_select=num_segments_to_select,
+        )
+    else:
+        raise ValueError(
+            f"Segment selection method has to be either 'by_weight' or 'forward_selection'."
+        )
+
     segment_weights = weigh_segments(
-        samples=samples, predictions=predictions, label_idx=label_idx, distances=distances
+        samples=samples,
+        predictions=predictions,
+        label_idx=label_idx,
+        distances=distances,
+        segment_subset=segment_subset,
     )
 
     return segment_mask, segment_weights
@@ -158,10 +194,12 @@ def render_explanation(
             segment_mask, positive_segments, color=positive, opacity=opacity
         )
 
-        positive_overlay = scale_opacity(overlay=positive_overlay,
-                                         segment_weights=segment_weights,
-                                         segment_mask=segment_mask,
-                                         segments_to_color=positive_segments)
+        positive_overlay = scale_opacity(
+            overlay=positive_overlay,
+            segment_weights=segment_weights,
+            segment_mask=segment_mask,
+            segments_to_color=positive_segments,
+        )
 
         overlay_image = Image.fromarray(positive_overlay.astype(np.int8), "RGBA")
         final_img.alpha_composite(overlay_image)
@@ -174,10 +212,12 @@ def render_explanation(
             segment_mask, negative_segments, color=negative, opacity=opacity
         )
 
-        negative_overlay = scale_opacity(overlay=negative_overlay,
-                                         segment_weights=segment_weights,
-                                         segment_mask=segment_mask,
-                                         segments_to_color=negative_segments)
+        negative_overlay = scale_opacity(
+            overlay=negative_overlay,
+            segment_weights=segment_weights,
+            segment_mask=segment_mask,
+            segments_to_color=negative_segments,
+        )
 
         overlay_image = Image.fromarray(negative_overlay.astype(np.int8), "RGBA")
         final_img.alpha_composite(overlay_image)

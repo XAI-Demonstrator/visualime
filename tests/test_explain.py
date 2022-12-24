@@ -30,7 +30,9 @@ def test_end_to_end():
     assert np.argmax(prediction, axis=1)[0] == 759
 
     segment_mask, segment_weights = explain_classification(
-        image=image, predict_fn=predict_fn, num_of_samples=128
+        image=image,
+        predict_fn=predict_fn,
+        num_of_samples=128,
     )
 
     assert segment_mask.shape == (224, 224)
