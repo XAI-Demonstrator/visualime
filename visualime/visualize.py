@@ -1,5 +1,6 @@
+from typing import List, Optional, Tuple, Union
+
 import numpy as np
-from typing import Union, Tuple, List, Optional
 
 
 def select_segments(
