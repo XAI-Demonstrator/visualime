@@ -60,16 +60,15 @@ def explain_classification(
 
     Returns
     -------
-    The segment_mask, a two-dimensional array of shape (image_width, image_height).
+    segment_mask : np.ndarray
+        A two-dimensional array of shape (image_width, image_height).
 
-    The segment_weights, a one-dimensional array whose length is equal to
-    the number of segments.
+    segment_weights : np.ndarray
+        A one-dimensional array whose length is equal to the number of segments.
 
-    Example
-    -------
-
-    # TODO: Add end-to-end example
-
+    Examples
+    --------
+    #TODO: Add end-to-end example
     """
     if label_idx is None:
         label_idx = int(np.argmax(predict_fn(image[None, :, :, :])))
@@ -138,14 +137,15 @@ def render_explanation(
 
     Returns
     -------
-    The rendered explanation as a PIL Image object.
+    explanation : PIL.Image
+        The rendered explanation as a PIL Image object.
 
-    # TODO: Describe how to work with it
+    #TODO: Describe how to work with it
 
-    Example
-    -------
+    Examples
+    --------
 
-    # TODO: Add end-to-end example
+    #TODO: Add end-to-end example
 
     """
     final_img = Image.fromarray(image.astype(np.int8), "RGB").convert("RGBA")
