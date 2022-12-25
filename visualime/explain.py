@@ -2,6 +2,7 @@ from typing import Any, Callable, Dict, Optional, Tuple, Union
 
 import numpy as np
 from PIL import Image
+from PIL.Image import Image as PIL_Image
 
 from .feature_selection import forward_selection, select_by_weight
 from .lime import (
@@ -79,7 +80,7 @@ def explain_classification(
 
     Examples
     --------
-    #TODO: Add end-to-end example
+    TODO: Add end-to-end example
     """
     model_type = "bayesian_ridge"
 
@@ -145,9 +146,8 @@ def render_explanation(
     negative: Optional[Union[Tuple[int], str]] = None,
     opacity: float = 0.7,
     coverage: float = 0.2,
-) -> Image:
-    """Takes the segment_mask and segment_weights produced by `explain_classification()` and
-    renders a visual explanation.
+) -> PIL_Image:
+    """Render a visual explanation from the `segment_mask` and `segment_weights` produced by `explain_classification()`.
 
     Parameters
     ----------
@@ -178,16 +178,12 @@ def render_explanation(
 
     Returns
     -------
-    explanation : PIL.Image
+    PIL.Image
         The rendered explanation as a PIL Image object.
-
-    #TODO: Describe how to work with it
 
     Examples
     --------
-
-    #TODO: Add end-to-end example
-
+    TODO: Add end-to-end example
     """
     final_img = Image.fromarray(image.astype(np.int8), "RGB").convert("RGBA")
 
