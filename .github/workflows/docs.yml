@@ -1,0 +1,42 @@
+name: Docs
+
+on:
+  push:
+    paths:
+      - '.github/workflows/docs.yml'
+      - 'docs/**'
+      - 'visualime/**'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+
+      - uses: actions/cache@v2.1.7
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('./docs/requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r docs/requirements.txt
+
+      - name: Build HTML docs
+        run: |
+          cd docs
+          make html
+
+      - name: Inspect output
+        run: |
+          ls -R docs/build
