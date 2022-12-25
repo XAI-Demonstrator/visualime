@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 from visualime.feature_selection import (
     forward_selection,
@@ -76,3 +77,40 @@ def test_that_lars_selection_recovers_top_feature():
 
     assert len(segment_subset) == 1
     assert segment_subset == [int(np.argmax(TRUE_COEFS))]
+
+
+def test_that_lars_path_failure_is_handled_gracefully(mocker):
+    p = mocker.patch("visualime.feature_selection.lars_path")
+    p.return_value = (None, None, [], 0)
+
+    with pytest.raises(RuntimeError):
+        _ = lars_selection(
+            samples=samples,
+            predictions=predictions,
+            label_idx=LABEL_IDX,
+            num_segments_to_select=1,
+        )
+
+
+@pytest.mark.parametrize(
+    "function", [select_by_weight, forward_selection, lars_selection]
+)
+def test_that_num_of_segments_to_select_cannot_exceed_num_of_segments(function):
+    with pytest.raises(ValueError):
+        _ = function(
+            samples=samples,
+            predictions=predictions,
+            label_idx=LABEL_IDX,
+            num_segments_to_select=NUM_SEGMENTS + 1,
+        )
+
+
+def test_that_forward_selection_only_accepts_known_models():
+    with pytest.raises(ValueError):
+        _ = forward_selection(
+            samples=samples,
+            predictions=predictions,
+            label_idx=LABEL_IDX,
+            model_type="this-model-does-not-exist-and-never-will",
+            num_segments_to_select=3,
+        )
