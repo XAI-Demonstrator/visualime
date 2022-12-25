@@ -9,6 +9,8 @@ exclusively supports image classification and gives its users full control over 
 properties of the generated explanations.
 It was written to produce stable, reliable, and expressive explanations at scale.
 
+**A full documentation is available on [visualime.readthedocs.io](https://visualime.readthedocs.io/).**
+
 ## Getting Started
 
 💡 _If you're new to_ LIME, _you might want to check out the_
