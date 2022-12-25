@@ -49,5 +49,18 @@ epub_show_urls = "footnote"
 
 # -- Options for numpydoc
 numpydoc_xref_param_type = True
-numpydoc_xref_ignore = {"optional", "type_without_description", "BadException"}
+numpydoc_xref_ignore = {
+    "optional",
+    "default",
+    "of",
+    "RGB",
+    "RGBA",
+    "type_without_description",
+    "BadException",
+}
+numpydoc_xref_aliases = {
+    "ints": "int",
+    "strs": "str",
+    "floats": "float",
+}
 numpydoc_validation_checks = {"all", "GL01", "SA04", "RT03"}
