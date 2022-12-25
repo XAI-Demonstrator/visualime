@@ -60,7 +60,7 @@ select_by_weight.__doc__ = f"""Select the `num_segments_to_select` segments with
     list of ints
         List of the indices of the selected segments.
         Segments are ordered by descending weight.
-    """
+"""
 
 
 def forward_selection(
@@ -83,12 +83,13 @@ def forward_selection(
         distances = default_distance(samples)
 
     try:
-        linear_model = LINEAR_MODELS[model_type](alpha=0, fit_intercept=True)
+        linear_model = LINEAR_MODELS[model_type]()
     except KeyError:
         raise ValueError(
             f"Unknown model_type '{model_type}'. Available options: {list(LINEAR_MODELS.keys())}"
         )
 
+    # TODO: Investigate whether the following can be sped up using joblib.Parallel
     def score(current_features: List[int], next_feature_idx: int):
         linear_model.fit(
             samples[:, current_features + [next_feature_idx]],
