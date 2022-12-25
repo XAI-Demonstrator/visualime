@@ -47,6 +47,9 @@ html_theme = "sphinx_rtd_theme"
 # -- Options for EPUB output
 epub_show_urls = "footnote"
 
+# -- Options for autocod
+autodoc_member_order = "bysource"
+
 # -- Options for numpydoc
 numpydoc_xref_param_type = True
 numpydoc_xref_ignore = {
