@@ -48,7 +48,6 @@ select_by_weight.__doc__ = f"""Select the `num_segments_to_select` segments with
     {SAMPLES_PREDICTIONS_LABEL_IDX_DOC}
 
     {MODEL_TYPE_DOC}
-
         It is generally advisable to use the same model as for the final `weigh_segments()` function.
 
     {DISTANCES_DOC}
@@ -58,10 +57,9 @@ select_by_weight.__doc__ = f"""Select the `num_segments_to_select` segments with
 
     Returns
     -------
-    selected_segments : list of ints
+    list of ints
         List of the indices of the selected segments.
         Segments are ordered by descending weight.
-
     """
 
 
@@ -134,7 +132,7 @@ forward_selection.__doc__ = f"""Select `num_segments_to_select` through forward 
 
     Returns
     -------
-    selected_segments : list of ints
+    list of ints
         List of the indices of the selected segments.
         The segments are ordered as they were selected.
 """
@@ -182,7 +180,7 @@ lars_selection.__doc__ = f"""Select up to `num_segments_to_select` segments usin
 
     Returns
     -------
-    selected_segments: list of ints
+    list of ints
         List of the indices of the selected segments.
         The segment indices are in ascending order.
 """
