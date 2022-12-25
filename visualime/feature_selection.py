@@ -3,10 +3,9 @@ from typing import List, Optional
 import numpy as np
 from sklearn.linear_model import lars_path
 
+from ._models import LINEAR_MODELS, MODEL_TYPE_DOC
 from .lime import (
     DISTANCES_DOC,
-    LINEAR_MODELS,
-    MODEL_TYPE_DOC,
     SAMPLES_PREDICTIONS_LABEL_IDX_DOC,
     default_distance,
     weigh_segments,

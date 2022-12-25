@@ -1,6 +1,6 @@
 import numpy as np
 
-from visualime.lime import generate_images, generate_samples, image_distances
+from visualime.lime import compute_distances, generate_images, generate_samples
 
 
 def test_that_replacing_background_with_image_generates_original_image():
@@ -25,6 +25,6 @@ def test_that_image_distances_are_computed():
 
     images = generate_images(image, segment_mask, samples, background=image)
 
-    distances = image_distances(image, images)
+    distances = compute_distances(image, images)
 
     assert distances.shape == (100,)

@@ -6,10 +6,10 @@ from PIL.Image import Image as PIL_Image
 
 from .feature_selection import forward_selection, select_by_weight
 from .lime import (
+    compute_distances,
     create_segments,
     generate_images,
     generate_samples,
-    image_distances,
     predict_images,
     weigh_segments,
 )
@@ -101,7 +101,7 @@ def explain_classification(
 
     predictions = predict_images(images=images, predict_fn=predict_fn)
 
-    distances = image_distances(image=image, images=images)
+    distances = compute_distances(image=image, images=images)
 
     num_segments_to_select = num_segments_to_select or int(samples.shape[1] / 2)
 
