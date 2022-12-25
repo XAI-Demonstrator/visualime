@@ -47,7 +47,8 @@ select_by_weight.__doc__ = f"""Select the `num_segments_to_select` segments with
     {SAMPLES_PREDICTIONS_LABEL_IDX_DOC}
 
     {MODEL_TYPE_DOC}
-        It is generally advisable to use the same model as for the final `weigh_segments()` function.
+        It is generally advisable to use the same model as for the final
+        :meth:`visualime.lime.weigh_segments` function.
 
     {DISTANCES_DOC}
 
@@ -81,6 +82,7 @@ def forward_selection(
     if distances is None:
         distances = default_distance(samples)
 
+    # TODO: This should presumably always run without regularization
     try:
         linear_model = LINEAR_MODELS[model_type]()
     except KeyError:
@@ -123,7 +125,8 @@ forward_selection.__doc__ = f"""Select `num_segments_to_select` through forward 
 
     {MODEL_TYPE_DOC}
 
-        It is generally advisable to use the same model as for the final `weigh_segments()` function.
+        It is generally advisable to use the same model as for the final
+        :meth:`visualime.lime.weigh_segments` function.
 
     {DISTANCES_DOC}
 
