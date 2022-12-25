@@ -1,5 +1,5 @@
 Welcome to the visuaLIME documentation!
-=======================================
+#######################################
 
 *VisuaLIME* is an implementation of *LIME* [1] focused on producing visual local explanations
 for image classifiers created as part of the
@@ -16,12 +16,12 @@ It was written to produce stable, reliable, and expressive explanations at scale
 `arXiv:1602.04938 <https://arxiv.org/abs/1602.04938>`_
 
 Contents
---------
+********
 
 .. toctree::
    :maxdepth: 2
 
-   visualime
+   introduction
    explain
    lime
    feature_selection
