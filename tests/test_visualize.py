@@ -129,6 +129,38 @@ def test_that_fewer_segments_are_selected_if_coverage_is_above_threshold():
     assert selected_segments.shape[0] == 1
 
 
+def test_that_overlay_is_transparent_if_no_segments_are_colored():
+    segment_mask = np.zeros((128, 128), dtype=int)
+    overlay = generate_overlay(
+        segment_mask=segment_mask, segments_to_color=[], color="red", opacity=1.0
+    )
+
+    assert overlay.shape == (128, 128, 4)
+    assert np.all(overlay[:, :, 3] == 0)
+
+
+def test_that_selected_segments_are_colored():
+    segment_mask = np.zeros((128, 128), dtype=int)
+    segment_mask[5, 5:8] = 1
+    segment_mask[12:24, 12:24] = 2
+    segment_mask[99, 101] = 3
+
+    overlay = generate_overlay(
+        segment_mask=segment_mask, segments_to_color=[1, 3], color="blue", opacity=1.0
+    )
+
+    assert overlay.shape == (128, 128, 4)
+    assert np.any(overlay[:, :, 3] == 255)
+    # segment 1 is colored in blue
+    assert np.all(overlay[5, 5:8, 2:4] == 255)
+    assert np.all(overlay[5, 5:8, 0:2] == 0)
+    # segment 2 is not colored
+    assert np.all(overlay[12:24, 12:24] == 0)
+    # segment 3 is colored in blue
+    assert np.all(overlay[99, 101, 2:4] == 255)
+    assert np.all(overlay[99, 101, 0:2] == 0)
+
+
 def test_that_opacity_is_rescaled_for_selected_segments():
     segment_mask = np.zeros((10, 10), dtype=int)
     segment_mask[2:3, 2:3] = 1
@@ -208,36 +240,48 @@ def test_that_opacity_is_scaled_to_maximum():
     assert np.all(scaled_overlay[2:5, 2:5, 3] == 127)
 
 
-def test_that_overlay_is_transparent_if_no_segments_are_colored():
-    segment_mask = np.zeros((128, 128), dtype=int)
-    overlay = generate_overlay(
-        segment_mask=segment_mask, segments_to_color=[], color="red", opacity=1.0
-    )
-
-    assert overlay.shape == (128, 128, 4)
-    assert np.all(overlay[:, :, 3] == 0)
-
-
-def test_that_selected_segments_are_colored():
-    segment_mask = np.zeros((128, 128), dtype=int)
-    segment_mask[5, 5:8] = 1
-    segment_mask[12:24, 12:24] = 2
-    segment_mask[99, 101] = 3
+@pytest.mark.parametrize("number", [1.1, 1, np.float32(0.5), np.uint8(1)])
+def test_that_relative_to_can_be_passed_as_float_compatible(number):
+    segment_mask = np.zeros((10, 10), dtype=int)
+    segments_to_color = [0]
+    segment_weights = np.array([1.0])
 
     overlay = generate_overlay(
-        segment_mask=segment_mask, segments_to_color=[1, 3], color="blue", opacity=1.0
+        segment_mask=segment_mask,
+        segments_to_color=segments_to_color,
+        color="red",
+        opacity=1.0,
     )
 
-    assert overlay.shape == (128, 128, 4)
-    assert np.any(overlay[:, :, 3] == 255)
-    # segment 1 is colored in blue
-    assert np.all(overlay[5, 5:8, 2:4] == 255)
-    assert np.all(overlay[5, 5:8, 0:2] == 0)
-    # segment 2 is not colored
-    assert np.all(overlay[12:24, 12:24] == 0)
-    # segment 3 is colored in blue
-    assert np.all(overlay[99, 101, 2:4] == 255)
-    assert np.all(overlay[99, 101, 0:2] == 0)
+    _ = scale_opacity(
+        overlay=overlay,
+        segment_mask=segment_mask,
+        segment_weights=segment_weights,
+        segments_to_color=segments_to_color,
+        relative_to=number,
+    )
+
+
+def test_that_invalid_relative_to_values_are_handled():
+    segment_mask = np.zeros((10, 10), dtype=int)
+    segments_to_color = [0]
+    segment_weights = np.array([1.0])
+
+    overlay = generate_overlay(
+        segment_mask=segment_mask,
+        segments_to_color=segments_to_color,
+        color="red",
+        opacity=1.0,
+    )
+
+    with pytest.raises(ValueError):
+        _ = scale_opacity(
+            overlay=overlay,
+            segment_mask=segment_mask,
+            segment_weights=segment_weights,
+            segments_to_color=segments_to_color,
+            relative_to="this-option-does-not-exist-and-never-will",
+        )
 
 
 @pytest.mark.parametrize(
