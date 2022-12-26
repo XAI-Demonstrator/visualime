@@ -1,10 +1,10 @@
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 import numpy as np
 from sklearn.feature_selection import SelectFromModel
 from sklearn.linear_model import lars_path
 
-from ._models import MODEL_TYPE_DOC, instantiate_model
+from ._models import MODEL_TYPE_PARAMS_DOC, instantiate_model
 from .lime import DISTANCES_DOC, SAMPLES_PREDICTIONS_LABEL_IDX_DOC, default_distance
 
 
@@ -13,6 +13,7 @@ def select_by_weight(
     predictions: np.ndarray,
     label_idx: int,
     model_type: str = "bayesian_ridge",
+    model_params: Optional[Dict[str, Any]] = None,
     distances: Optional[np.ndarray] = None,
     num_segments_to_select: Optional[int] = None,
 ) -> List[int]:
@@ -24,7 +25,7 @@ def select_by_weight(
             f"number of features in data ({num_segments})"
         )
 
-    linear_model = instantiate_model(model_type)
+    linear_model = instantiate_model(model_type=model_type, model_params=model_params)
 
     selector = SelectFromModel(
         estimator=linear_model, threshold=-np.inf, max_features=num_segments_to_select
@@ -40,7 +41,7 @@ select_by_weight.__doc__ = f"""Select the `num_segments_to_select` segments with
     ----------
     {SAMPLES_PREDICTIONS_LABEL_IDX_DOC}
 
-    {MODEL_TYPE_DOC}
+    {MODEL_TYPE_PARAMS_DOC}
 
         It is generally advisable to use the same model as for the final
         :meth:`visualime.lime.weigh_segments` function.
@@ -63,6 +64,7 @@ def forward_selection(
     predictions: np.ndarray,
     label_idx: int,
     model_type: str = "ridge",
+    model_params: Optional[Dict[str, Any]] = None,
     distances: Optional[np.ndarray] = None,
     num_segments_to_select: Optional[int] = None,
 ) -> List[int]:
@@ -78,7 +80,7 @@ def forward_selection(
         distances = default_distance(samples)
 
     # TODO: Understand and account for the implications of regularization
-    linear_model = instantiate_model(model_type)
+    linear_model = instantiate_model(model_type=model_type, model_params=model_params)
 
     # TODO: Wait for https://github.com/scikit-learn/scikit-learn/issues/25236
     def score(current_features: List[int], next_feature_idx: int):
@@ -113,7 +115,7 @@ forward_selection.__doc__ = f"""Select `num_segments_to_select` through forward 
     ----------
     {SAMPLES_PREDICTIONS_LABEL_IDX_DOC}
 
-    {MODEL_TYPE_DOC}
+    {MODEL_TYPE_PARAMS_DOC}
 
         It is generally advisable to use the same model as for the final
         :meth:`visualime.lime.weigh_segments` function.
