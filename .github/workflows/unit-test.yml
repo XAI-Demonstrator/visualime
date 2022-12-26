@@ -3,6 +3,7 @@ name: Unit Test
 on:
   push:
     paths:
+      - '.github/workflows/unit-test.yml'
       - 'tests/**'
       - 'visualime/**'
   workflow_dispatch:
@@ -42,5 +43,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           pip install -r requirements-test.txt
-          pytest -v --cov visualime tests/
+          pytest -v --cov=visualime tests/
           coveralls --service=github
