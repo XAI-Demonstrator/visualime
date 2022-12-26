@@ -7,7 +7,7 @@ from visualime.feature_selection import (
     select_by_weight,
 )
 
-NUM_SAMPLES = 100
+NUM_SAMPLES = 1024
 NUM_SEGMENTS = 10
 LABEL_IDX = 0
 TRUE_COEFS = np.array([0.0, 0.0, 0.05, 0.0, 0.5, 0.15, 0.0, 0.0, 0.3, 0.0])
@@ -28,7 +28,7 @@ def test_that_select_by_weight_recovers_top_feature():
     )
 
     assert len(segment_subset) == 1
-    assert segment_subset == [int(np.argmax(TRUE_COEFS))]
+    assert segment_subset[0] == int(np.argmax(TRUE_COEFS))
 
 
 def test_that_select_by_weight_recovers_top_3_features():
@@ -40,7 +40,7 @@ def test_that_select_by_weight_recovers_top_3_features():
     )
 
     assert len(segment_subset) == 3
-    assert segment_subset == list(map(int, np.argsort(-TRUE_COEFS)[:3]))
+    assert set(segment_subset) == set(map(int, np.argsort(-TRUE_COEFS)[:3]))
 
 
 def test_that_forward_selection_recovers_top_feature():
@@ -52,7 +52,7 @@ def test_that_forward_selection_recovers_top_feature():
     )
 
     assert len(segment_subset) == 1
-    assert segment_subset == [int(np.argmax(TRUE_COEFS))]
+    assert segment_subset[0] == int(np.argmax(TRUE_COEFS))
 
 
 def test_that_forward_selection_recovers_top_3_features():
@@ -64,7 +64,7 @@ def test_that_forward_selection_recovers_top_3_features():
     )
 
     assert len(segment_subset) == 3
-    assert segment_subset == list(map(int, np.argsort(-TRUE_COEFS)[:3]))
+    assert set(segment_subset) == set(map(int, np.argsort(-TRUE_COEFS)[:3]))
 
 
 def test_that_lars_selection_recovers_top_feature():
@@ -76,7 +76,7 @@ def test_that_lars_selection_recovers_top_feature():
     )
 
     assert len(segment_subset) == 1
-    assert segment_subset == [int(np.argmax(TRUE_COEFS))]
+    assert segment_subset[0] == int(np.argmax(TRUE_COEFS))
 
 
 def test_that_lars_path_failure_is_handled_gracefully(mocker):
