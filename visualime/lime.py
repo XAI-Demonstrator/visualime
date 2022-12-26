@@ -258,10 +258,15 @@ def compute_distances(
         Array of length `images.shape[0]` containing the distances of each image to the original image.
     """
     distances_per_channel = np.linalg.norm(images - image, axis=(1, 2), ord=norm)
+    # TODO: Re-scaling for other norms
     if select == "sum":
-        return np.sum(distances_per_channel, axis=1)
+        return np.sum(distances_per_channel, axis=1) / (
+            255 * image.shape[2] * np.sqrt(np.prod(image.shape[0:2]))
+        )
     elif select == "max":
-        return np.max(distances_per_channel, axis=1)
+        return np.max(distances_per_channel, axis=1) / (
+            255 * np.sqrt(np.prod(image.shape[0:2]))
+        )
     else:
         raise ValueError(f"Invalid value '{select}' for parameter 'select'.")
 

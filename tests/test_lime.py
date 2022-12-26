@@ -65,6 +65,19 @@ def test_that_invalid_select_method_raises_exception():
         _ = compute_distances(image, images, select="this-method-does-not-exist")
 
 
+@pytest.mark.parametrize("select", ["max", "sum"])
+def test_that_image_distances_are_between_0_and_1(select):
+    black_images = np.zeros((1, 128, 128, 3))
+    white_images = 255 * np.ones((1, 128, 128, 3))
+    black_image = np.zeros((128, 128, 3))
+    white_image = 255 * np.ones((128, 128, 3))
+
+    assert list(compute_distances(black_image, black_images))[0] == 0
+    assert list(compute_distances(white_image, white_images))[0] == 0
+    assert list(compute_distances(black_image, white_images, select=select))[0] == 1
+    assert list(compute_distances(white_image, black_images, select=select))[0] == 1
+
+
 def test_that_weigh_segments_only_accepts_known_models():
     with pytest.raises(ValueError):
         _ = weigh_segments(
