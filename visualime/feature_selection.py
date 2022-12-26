@@ -83,7 +83,7 @@ def forward_selection(
     if distances is None:
         distances = default_distance(samples)
 
-    # TODO: This should presumably always run without regularization
+    # TODO: Understand and account for the implications of regularization
     try:
         linear_model = LINEAR_MODELS[model_type]()
     except KeyError:
@@ -91,7 +91,7 @@ def forward_selection(
             f"Unknown model_type '{model_type}'. Available options: {list(LINEAR_MODELS.keys())}"
         )
 
-    # TODO: Investigate whether the following can be sped up using joblib.Parallel
+    # TODO: Wait for https://github.com/scikit-learn/scikit-learn/issues/25236
     def score(current_features: List[int], next_feature_idx: int):
         linear_model.fit(
             samples[:, current_features + [next_feature_idx]],
