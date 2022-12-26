@@ -1,3 +1,4 @@
+import warnings
 from typing import List, Optional, Tuple, Union
 
 import numpy as np
@@ -34,6 +35,9 @@ def select_segments(
         The coverage of the selected segments relative to the area of the image.
         Either `coverage` or `num_of_segments` must be specified.
 
+        A warning will be given if reaching the coverage threshold requires selection
+        of all segments.
+
     num_of_segments : int, optional
         The number of segments to select.
         Either `num_of_segments` or `coverage` must be specified.
@@ -43,10 +47,16 @@ def select_segments(
         If the specified `num_of_segments` does not reach this coverage, additional
         segments will be selected until this minimum coverage is reached.
 
+        A warning will be given if reaching the coverage threshold requires selection
+        of all segments.
+
     max_coverage : float, default 1.0
         The maximum coverage of the selected segments relative to the area of the image.
         If the specified `num_of_segments` exceeds this coverage, segments will
         be removed from the selection until the coverage is below this maximum.
+
+        At least one segment will be returned even if the maximum coverage is exceeded.
+        In this case, a warning will be given.
 
     min_num_of_segments : int, default 0
         The minimum number of segments to select.
@@ -70,20 +80,30 @@ def select_segments(
 
     >>> select_segments(segment_weights=-segment_weights, ...)
     """
-    max_num_of_segments = max_num_of_segments or int(np.max(segment_mask) + 1)
-
     if coverage is None and num_of_segments is None:
-        raise ValueError("Either coverage or num_of_segments has to be specified")
+        raise ValueError("Either coverage or num_of_segments has to be specified.")
 
     if coverage is not None and num_of_segments is not None:
-        raise ValueError("Only either coverage or num_of_segments can be given")
+        raise ValueError("Only either coverage or num_of_segments can be given.")
 
     if min_coverage >= max_coverage:
-        raise ValueError("min_coverage has to be strictly smaller than max_coverage")
+        raise ValueError("min_coverage has to be strictly smaller than max_coverage.")
+
+    max_segment_idx = int(np.max(segment_mask))
+    total_num_of_segments = max_segment_idx + 1
+
+    if segment_weights.shape[0] != total_num_of_segments:
+        raise ValueError(
+            f"The number of segment_weights ({segment_weights.shape[0]}) does not match "
+            f"the number of segments ({total_num_of_segments}) in the provided segment_mask. "
+            f"Note that segments need to be numbered consecutively, starting at 0."
+        )
+
+    max_num_of_segments = max_num_of_segments or total_num_of_segments
 
     if min_num_of_segments >= max_num_of_segments:
         raise ValueError(
-            "min_num_of_segments has to be strictly larger than max_num_of_segments"
+            "min_num_of_segments has to be strictly smaller than max_num_of_segments."
         )
 
     _area = segment_mask.shape[0] * segment_mask.shape[1]
@@ -91,22 +111,27 @@ def select_segments(
     ordered_segments = np.argsort(-segment_weights)
 
     if coverage is not None:
-        coverage = min(coverage, max_coverage)
-        coverage = max(coverage, min_coverage)
+        coverage = min(coverage, max_coverage, 1.0)
+        coverage = max(coverage, min_coverage, 0.0)
 
-        for i in range(max_num_of_segments + 1):
-            _selected_segments = ordered_segments[:i]
+        for i in range(max_segment_idx - 1):
+            _selected_segments = ordered_segments[: i + 1]
             if np.isin(segment_mask, _selected_segments).sum() / _area >= coverage:
-                num_of_segments = i - 2
+                num_of_segments = i + 1
                 break
         else:
+            warnings.warn(
+                f"Need to select all {max_num_of_segments} segments to reach desired "
+                f"coverage threshold of {coverage}.",
+                RuntimeWarning,
+            )
             num_of_segments = max_num_of_segments
 
     if num_of_segments is not None:
         num_of_segments = min(num_of_segments, max_num_of_segments)
         num_of_segments = max(num_of_segments, min_num_of_segments)
 
-        _selected_segments = ordered_segments[: num_of_segments + 1]
+        _selected_segments = ordered_segments[:num_of_segments]
 
         if np.isin(segment_mask, _selected_segments).sum() / _area > max_coverage:
             selected_segments = select_segments(
@@ -114,6 +139,11 @@ def select_segments(
                 segment_mask=segment_mask,
                 coverage=max_coverage,
             )
+            if np.isin(segment_mask, selected_segments).sum() / _area > max_coverage:
+                warnings.warn(
+                    f"Despite selecting only {selected_segments.shape[0]} segments, "
+                    f"coverage still exceeds the desired maximum of {max_coverage:.2f}."
+                )
         elif np.isin(segment_mask, _selected_segments).sum() / _area < min_coverage:
             selected_segments = select_segments(
                 segment_weights=segment_weights,
