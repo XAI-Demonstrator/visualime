@@ -1,11 +1,23 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 import numpy as np
 from sklearn.feature_selection import SelectFromModel
 from sklearn.linear_model import lars_path
 
 from ._models import MODEL_TYPE_PARAMS_DOC, instantiate_model
-from .lime import DISTANCES_DOC, SAMPLES_PREDICTIONS_LABEL_IDX_DOC, default_distance
+from .lime import SAMPLES_PREDICTIONS_LABEL_IDX_DOC
+from .metrics import DISTANCES_KERNEL_DOC, cosine_distance, exponential_kernel
+
+
+def _get_num_segments(samples: np.ndarray, num_segments_to_select: Optional[int]):
+    num_segments = samples.shape[1]
+    num_segments_to_select = num_segments_to_select or num_segments
+    if num_segments_to_select > num_segments:
+        raise ValueError(
+            f"Number of features to select ({num_segments_to_select}) cannot exceed "
+            f"number of features in data ({num_segments})"
+        )
+    return num_segments, num_segments_to_select
 
 
 def select_by_weight(
@@ -15,22 +27,23 @@ def select_by_weight(
     model_type: str = "bayesian_ridge",
     model_params: Optional[Dict[str, Any]] = None,
     distances: Optional[np.ndarray] = None,
+    kernel: Callable[[np.ndarray], np.ndarray] = exponential_kernel,
     num_segments_to_select: Optional[int] = None,
 ) -> List[int]:
-    num_segments = samples.shape[1]
-    num_segments_to_select = num_segments_to_select or num_segments
-    if num_segments_to_select > num_segments:
-        raise ValueError(
-            f"Number of features to select ({num_segments_to_select}) cannot exceed "
-            f"number of features in data ({num_segments})"
-        )
+    num_segments, num_segments_to_select = _get_num_segments(
+        samples, num_segments_to_select
+    )
+
+    if distances is None:
+        distances = cosine_distance(samples)
+    sample_weight = kernel(distances)
 
     linear_model = instantiate_model(model_type=model_type, model_params=model_params)
 
     selector = SelectFromModel(
         estimator=linear_model, threshold=-np.inf, max_features=num_segments_to_select
     )
-    selector.fit(X=samples, y=predictions[:, label_idx], sample_weight=distances)
+    selector.fit(X=samples, y=predictions[:, label_idx], sample_weight=sample_weight)
 
     return list(selector.get_support(indices=True))
 
@@ -46,7 +59,7 @@ select_by_weight.__doc__ = f"""Select the `num_segments_to_select` segments with
         It is generally advisable to use the same model as for the final
         :meth:`visualime.lime.weigh_segments` function.
 
-    {DISTANCES_DOC}
+    {DISTANCES_KERNEL_DOC}
 
     num_segments_to_select : int, optional
         The number of segments to select. If not given, select all segments.
@@ -66,18 +79,16 @@ def forward_selection(
     model_type: str = "ridge",
     model_params: Optional[Dict[str, Any]] = None,
     distances: Optional[np.ndarray] = None,
+    kernel: Callable[[np.ndarray], np.ndarray] = exponential_kernel,
     num_segments_to_select: Optional[int] = None,
 ) -> List[int]:
-    num_segments = samples.shape[1]
-    num_segments_to_select = num_segments_to_select or num_segments
-    if num_segments_to_select > num_segments:
-        raise ValueError(
-            f"Number of features to select ({num_segments_to_select}) cannot exceed "
-            f"number of features in data ({num_segments})"
-        )
+    num_segments, num_segments_to_select = _get_num_segments(
+        samples, num_segments_to_select
+    )
 
     if distances is None:
-        distances = default_distance(samples)
+        distances = cosine_distance(samples)
+    sample_weight = kernel(distances)
 
     # TODO: Understand and account for the implications of regularization
     linear_model = instantiate_model(model_type=model_type, model_params=model_params)
@@ -87,13 +98,13 @@ def forward_selection(
         linear_model.fit(
             samples[:, current_features + [next_feature_idx]],
             predictions[:, label_idx],
-            sample_weight=distances,
+            sample_weight=sample_weight,
         )
 
         return linear_model.score(
             samples[:, current_features + [next_feature_idx]],
             predictions[:, label_idx],
-            sample_weight=distances,
+            sample_weight=sample_weight,
         )
 
     selected_segments = []
@@ -120,7 +131,7 @@ forward_selection.__doc__ = f"""Select `num_segments_to_select` through forward 
         It is generally advisable to use the same model as for the final
         :meth:`visualime.lime.weigh_segments` function.
 
-    {DISTANCES_DOC}
+    {DISTANCES_KERNEL_DOC}
 
     num_segments_to_select : int, optional
         The number of segments to select. If not given, select all segments.
@@ -139,13 +150,9 @@ def lars_selection(
     label_idx: int,
     num_segments_to_select: Optional[int] = None,
 ) -> List[int]:
-    num_segments = samples.shape[1]
-    num_segments_to_select = num_segments_to_select or num_segments
-    if num_segments_to_select > num_segments:
-        raise ValueError(
-            f"Number of features to select ({num_segments_to_select}) cannot exceed "
-            f"number of features in data ({num_segments})"
-        )
+    num_segments, num_segments_to_select = _get_num_segments(
+        samples, num_segments_to_select
+    )
 
     _, _, coefs, num_of_iterations = lars_path(
         samples, predictions[:, label_idx], return_path=True, return_n_iter=True
