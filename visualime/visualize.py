@@ -234,6 +234,7 @@ def scale_opacity(
     segment_weights: np.ndarray,
     segments_to_color: Union[np.ndarray, List[int]],
     relative_to: Union[str, float] = "max",
+    exponent: float = 1.0,
     max_opacity: float = 1.0,
 ) -> np.ndarray:
     """Set the opacity of each segment according to its weight.
@@ -268,6 +269,16 @@ def scale_opacity(
         considered as the maximum value. Note that for this calculation, all segments are considered,
         even if they are not included in `segments_to_color`.
 
+    exponent: int, default 1.0
+        The exponent used when calculating the opacity of a given segment.
+
+        A segment's opacity is calculated as `(segment_weight/reference)**exponent`,
+        where `segment_weight` is the normalized weight of the segment.
+
+        The default value for the exponent is 1.0, resulting in linear scaling of the opacity.
+        An exponent smaller than 1.0 gives more emphasis to smaller weights, while an
+        exponent larger than 1.0 gives more emphasis to larger weights.
+
     max_opacity : float, default 1.0
         The maximum opacity of the overlay as a number between `0.0` and `1.0`.
 
@@ -287,10 +298,11 @@ def scale_opacity(
     else:
         raise ValueError(f"Invalid value '{relative_to}' for 'relative_to'.")
 
-    # TODO: allow different scaling (e.g., quadratic, logarithmic)
     new_opacity = np.clip(
-        max_opacity * 255 * rescaled_weights / reference, 0, 255
-    ).astype(np.int8)
+        255 * np.clip((rescaled_weights / reference) ** exponent, 0, 1),
+        0,
+        max_opacity * 255,
+    ).astype(np.uint8)
 
     new_overlay = np.ndarray.copy(overlay)
 
@@ -301,7 +313,7 @@ def scale_opacity(
     return new_overlay
 
 
-# TODO: Add more functions to re-scale and/or normalize the segments weights, deal with outliers etc.
+# TODO: Add more functions to normalize the segments weights, deal with outliers etc.
 
 
 def smooth_weights(segment_weights: np.ndarray) -> np.ndarray:
