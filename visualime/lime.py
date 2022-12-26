@@ -183,13 +183,13 @@ def generate_images(
         An array of shape `(num_of_samples, image_width, image_height, 3)`.
     """
     binary_segment_mask = np.zeros(
-        shape=(samples.shape[0], image.shape[0], image.shape[1]), dtype=np.int8
+        shape=(samples.shape[0], image.shape[0], image.shape[1]), dtype=np.uint8
     )
 
     for sample_idx in range(binary_segment_mask.shape[0]):
         binary_segment_mask[sample_idx, :, :] = np.isin(
             segment_mask, np.nonzero(samples[sample_idx])
-        ).astype(np.int8)
+        ).astype(np.uint8)
 
     images = binary_segment_mask[:, :, :, None] * image
 
