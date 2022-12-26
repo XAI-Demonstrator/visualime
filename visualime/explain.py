@@ -187,7 +187,7 @@ def render_explanation(
     --------
     TODO: Add end-to-end example
     """
-    final_img = Image.fromarray(image.astype(np.int8), "RGB").convert("RGBA")
+    final_img = Image.fromarray(image.astype(np.uint8), "RGB").convert("RGBA")
 
     if positive is not None:
         positive_segments = select_segments(
@@ -204,7 +204,7 @@ def render_explanation(
             segments_to_color=positive_segments,
         )
 
-        overlay_image = Image.fromarray(positive_overlay.astype(np.int8), "RGBA")
+        overlay_image = Image.fromarray(positive_overlay.astype(np.uint8), "RGBA")
         final_img.alpha_composite(overlay_image)
 
     if negative is not None:
@@ -222,7 +222,7 @@ def render_explanation(
             segments_to_color=negative_segments,
         )
 
-        overlay_image = Image.fromarray(negative_overlay.astype(np.int8), "RGBA")
+        overlay_image = Image.fromarray(negative_overlay.astype(np.uint8), "RGBA")
         final_img.alpha_composite(overlay_image)
 
     return final_img
