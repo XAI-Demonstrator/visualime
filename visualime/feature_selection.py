@@ -1,15 +1,11 @@
 from typing import List, Optional
 
 import numpy as np
+from sklearn.feature_selection import SelectFromModel
 from sklearn.linear_model import lars_path
 
-from ._models import LINEAR_MODELS, MODEL_TYPE_DOC
-from .lime import (
-    DISTANCES_DOC,
-    SAMPLES_PREDICTIONS_LABEL_IDX_DOC,
-    default_distance,
-    weigh_segments,
-)
+from ._models import MODEL_TYPE_DOC, instantiate_model
+from .lime import DISTANCES_DOC, SAMPLES_PREDICTIONS_LABEL_IDX_DOC, default_distance
 
 
 def select_by_weight(
@@ -28,16 +24,14 @@ def select_by_weight(
             f"number of features in data ({num_segments})"
         )
 
-    segment_weights = weigh_segments(
-        samples=samples,
-        predictions=predictions,
-        label_idx=label_idx,
-        model_type=model_type,
-        distances=distances,
-        segment_subset=None,
-    )
+    linear_model = instantiate_model(model_type)
 
-    return list(np.argsort(-np.abs(segment_weights))[:num_segments_to_select])
+    selector = SelectFromModel(
+        estimator=linear_model, threshold=-np.inf, max_features=num_segments_to_select
+    )
+    selector.fit(X=samples, y=predictions[:, label_idx], sample_weight=distances)
+
+    return list(selector.get_support(indices=True))
 
 
 select_by_weight.__doc__ = f"""Select the `num_segments_to_select` segments with the highest weight.
@@ -84,12 +78,7 @@ def forward_selection(
         distances = default_distance(samples)
 
     # TODO: Understand and account for the implications of regularization
-    try:
-        linear_model = LINEAR_MODELS[model_type]()
-    except KeyError:
-        raise ValueError(
-            f"Unknown model_type '{model_type}'. Available options: {list(LINEAR_MODELS.keys())}"
-        )
+    linear_model = instantiate_model(model_type)
 
     # TODO: Wait for https://github.com/scikit-learn/scikit-learn/issues/25236
     def score(current_features: List[int], next_feature_idx: int):
