@@ -2,3 +2,4 @@ pytest
 pytest-coverage
 pytest-mock
 tensorflow-cpu
+coveralls
