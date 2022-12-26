@@ -1,7 +1,127 @@
 import numpy as np
 import pytest
 
-from visualime.visualize import _get_color, generate_overlay
+from visualime.visualize import _get_color, generate_overlay, select_segments
+
+
+def test_that_either_coverage_or_num_of_segments_has_to_be_specified():
+    segment_mask = np.zeros((128, 128), dtype=int)
+    segment_weights = np.array([0])
+    with pytest.raises(ValueError):
+        _ = select_segments(segment_mask=segment_mask, segment_weights=segment_weights)
+
+    with pytest.raises(ValueError):
+        _ = select_segments(
+            segment_mask=segment_mask,
+            segment_weights=segment_weights,
+            coverage=0.5,
+            num_of_segments=1,
+        )
+
+
+def test_that_min_coverage_has_to_be_smaller_than_max_coverage():
+    segment_mask = np.zeros((128, 128), dtype=int)
+    segment_weights = np.array([0])
+    with pytest.raises(ValueError):
+        _ = select_segments(
+            segment_mask=segment_mask,
+            segment_weights=segment_weights,
+            num_of_segments=1,
+            min_coverage=0.8,
+            max_coverage=0.2,
+        )
+
+
+def test_that_min_num_of_segments_has_to_be_smaller_than_max_num_of_segments():
+    segment_mask = np.zeros((128, 128), dtype=int)
+    segment_weights = np.array([0])
+    with pytest.raises(ValueError):
+        _ = select_segments(
+            segment_mask=segment_mask,
+            segment_weights=segment_weights,
+            coverage=0.5,
+            min_num_of_segments=5,
+            max_num_of_segments=5,
+        )
+
+
+def test_that_each_segment_needs_a_weight():
+    segment_mask = np.zeros((128, 128), dtype=int)
+    segment_weights = np.array([1.0])
+    too_many_segment_weights = np.array([0.5, 0.2, 0.5])
+
+    _ = select_segments(
+        segment_mask=segment_mask, segment_weights=segment_weights, coverage=0.5
+    )
+
+    with pytest.raises(ValueError):
+        _ = select_segments(
+            segment_mask=segment_mask,
+            segment_weights=too_many_segment_weights,
+            coverage=0.5,
+        )
+
+    segment_mask[1, 1] = 1
+
+    with pytest.raises(ValueError):
+        _ = select_segments(
+            segment_mask=segment_mask, segment_weights=segment_weights, coverage=0.5
+        )
+
+
+def test_that_user_is_warned_if_all_segments_are_selected_to_reach_coverage_threshold():
+    segment_mask = np.zeros((10, 10), dtype=int)
+    segment_mask[5:10, 5:10] = 1
+    segment_weights = np.array([0.7, 0.3])
+
+    with pytest.warns(RuntimeWarning):
+        _ = select_segments(
+            segment_mask=segment_mask, segment_weights=segment_weights, coverage=0.99
+        )
+
+
+def test_that_correct_number_of_segments_is_selected():
+    segment_mask = np.zeros((10, 10), dtype=int)
+    segment_mask[5:10, 5:10] = 1
+    segment_weights = np.array([0.2, 0.8])
+
+    selected_segments = select_segments(
+        segment_mask=segment_mask, segment_weights=segment_weights, num_of_segments=1
+    )
+
+    assert selected_segments.shape[0] == 1
+
+
+def test_that_more_segments_are_selected_if_coverage_is_below_threshold():
+    segment_mask = np.zeros((10, 10), dtype=int)
+    segment_mask[5:10, 5:10] = 1
+    segment_weights = np.array([0.2, 0.8])
+
+    selected_segments = select_segments(
+        segment_mask=segment_mask,
+        segment_weights=segment_weights,
+        num_of_segments=1,
+        min_coverage=0.99,
+    )
+
+    assert selected_segments.shape[0] == 2
+
+
+def test_that_fewer_segments_are_selected_if_coverage_is_above_threshold():
+    segment_mask = np.zeros((10, 10), dtype=int)
+    segment_mask[5:10, 0:10] = 1
+    segment_mask[1:5, 1:5] = 2
+    segment_weights = np.array([0.1, 0.5, 0.4])
+
+    with pytest.warns(UserWarning):
+        selected_segments = select_segments(
+            segment_mask=segment_mask,
+            segment_weights=segment_weights,
+            num_of_segments=2,
+            max_coverage=0.3,
+        )
+
+    assert selected_segments.shape[0] == 1
 
 
 def test_that_overlay_is_transparent_if_no_segments_are_colored():
