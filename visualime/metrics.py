@@ -3,7 +3,7 @@ import numpy as np
 
 def cosine_distance(samples: np.ndarray):
     """Cosine distance as in the original LIME implementation."""
-    return np.sum(samples, axis=1) / (np.linalg.norm(samples, axis=1) + 1e-6)
+    return 1 - np.sum(samples, axis=1) / (np.linalg.norm(samples, axis=1) + 1e-6)
 
 
 def exponential_kernel(distances: np.ndarray, kernel_width: float = 0.25):
@@ -14,7 +14,7 @@ def exponential_kernel(distances: np.ndarray, kernel_width: float = 0.25):
     distances : np.ndarray
         One-dimensional array as returned by :meth:`visualime.lime.compute_distances`.
 
-    kernel_width : float, default 0.25
+    kernel_width : float, default 1.0
         Width of the exponential kernel.
     """
     return np.sqrt(np.exp(-(distances**2) / kernel_width**2))

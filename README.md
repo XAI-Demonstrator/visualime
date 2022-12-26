@@ -58,7 +58,6 @@ For a full example, see
 ## Roadmap
 
 - Verify that the algorithm matches the original LIME and document differences
-- Build out a comprehensive unit test suite
 - Add performance benchmarks and optimize implementation of the algorithm
 - Include utilities to assess and tune explanations for stability and truthfulness
 - Provide a best practice example of implementing a fully configurable LIME explainer
