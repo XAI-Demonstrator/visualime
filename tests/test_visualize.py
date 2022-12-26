@@ -1,7 +1,12 @@
 import numpy as np
 import pytest
 
-from visualime.visualize import _get_color, generate_overlay, select_segments
+from visualime.visualize import (
+    _get_color,
+    generate_overlay,
+    scale_opacity,
+    select_segments,
+)
 
 
 def test_that_either_coverage_or_num_of_segments_has_to_be_specified():
@@ -122,6 +127,85 @@ def test_that_fewer_segments_are_selected_if_coverage_is_above_threshold():
         )
 
     assert selected_segments.shape[0] == 1
+
+
+def test_that_opacity_is_rescaled_for_selected_segments():
+    segment_mask = np.zeros((10, 10), dtype=int)
+    segment_mask[2:3, 2:3] = 1
+    segments_to_color = [1]
+    segment_weights = np.array([0.0, 3.0])
+
+    overlay = generate_overlay(
+        segment_mask=segment_mask,
+        segments_to_color=segments_to_color,
+        color="red",
+        opacity=1.0,
+    )
+
+    assert np.all(overlay[2:3, 2:3, 3] == 255)
+
+    scaled_overlay = scale_opacity(
+        overlay=overlay,
+        segment_mask=segment_mask,
+        segment_weights=segment_weights,
+        segments_to_color=segments_to_color,
+        max_opacity=0.5,
+    )
+
+    assert np.all(scaled_overlay[2:3, 2:3, 3] == 127)
+
+
+def test_that_opacity_is_scaled_to_custom_reference():
+    segment_mask = np.zeros((10, 10), dtype=int)
+    segment_mask[2:5, 2:5] = 1
+    segments_to_color = [1]
+    segment_weights = np.array([0.0, 3.0])
+
+    overlay = generate_overlay(
+        segment_mask=segment_mask,
+        segments_to_color=segments_to_color,
+        color="red",
+        opacity=1.0,
+    )
+
+    assert np.all(overlay[2:5, 2:5, 3] == 255)
+
+    scaled_overlay = scale_opacity(
+        overlay=overlay,
+        segment_mask=segment_mask,
+        segment_weights=segment_weights,
+        segments_to_color=segments_to_color,
+        max_opacity=0.5,
+        relative_to=0.5,
+    )
+
+    assert np.all(scaled_overlay[2:5, 2:5, 3] == 127)
+
+
+def test_that_opacity_is_scaled_to_maximum():
+    segment_mask = np.zeros((10, 10), dtype=int)
+    segment_mask[2:5, 2:5] = 1
+    segments_to_color = [1]
+    segment_weights = np.array([0.0, 3.0])
+
+    overlay = generate_overlay(
+        segment_mask=segment_mask,
+        segments_to_color=segments_to_color,
+        color="red",
+        opacity=1.0,
+    )
+
+    assert np.all(overlay[2:5, 2:5, 3] == 255)
+
+    scaled_overlay = scale_opacity(
+        overlay=overlay,
+        segment_mask=segment_mask,
+        segment_weights=segment_weights,
+        segments_to_color=segments_to_color,
+        max_opacity=0.5,
+    )
+
+    assert np.all(scaled_overlay[2:5, 2:5, 3] == 127)
 
 
 def test_that_overlay_is_transparent_if_no_segments_are_colored():
