@@ -47,6 +47,7 @@ select_by_weight.__doc__ = f"""Select the `num_segments_to_select` segments with
     {SAMPLES_PREDICTIONS_LABEL_IDX_DOC}
 
     {MODEL_TYPE_DOC}
+
         It is generally advisable to use the same model as for the final
         :meth:`visualime.lime.weigh_segments` function.
 

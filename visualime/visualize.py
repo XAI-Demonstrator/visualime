@@ -208,7 +208,7 @@ def generate_overlay(
         To obtain a list of available color names, run:
 
         >>> from PIL.ImageColor import colormap, getrgb
-        >>> for color_name, color_code in colormap.items(): print(color_name, getrgb(color_code))
+        >>> for name, code in colormap.items(): print(name, getrgb(code))
 
         Note that while it is possible to pass an RGBA tuple, only the RGB values
         will be considered.
