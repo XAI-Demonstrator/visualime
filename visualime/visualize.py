@@ -291,6 +291,11 @@ def scale_opacity(
     """
     rescaled_weights = np.abs(segment_weights / np.linalg.norm(segment_weights))
 
+    try:
+        relative_to = float(relative_to)
+    except ValueError:
+        pass
+
     if relative_to == "max":
         reference = np.max(rescaled_weights)
     elif isinstance(relative_to, float):
