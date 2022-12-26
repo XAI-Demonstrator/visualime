@@ -1,6 +1,7 @@
 from typing import List, Optional, Tuple, Union
 
 import numpy as np
+from PIL.ImageColor import getrgb
 
 
 def select_segments(
@@ -126,34 +127,35 @@ def select_segments(
     return selected_segments
 
 
-COLORS = {
-    "green": [0, 255, 0],
-    "blue": [38, 55, 173],
-    "red": [173, 38, 38],
-    "white": [255, 255, 255],
-    "black": [0, 0, 0],
-    "violet": [215, 102, 255],
-}
+def _get_color(color: Union[str, Tuple[int, int, int]], opacity: float) -> np.ndarray:
+    """Convert a color specified by name or RGB tuple into an RGBA color.
 
-
-def _get_color(color: str, opacity: float) -> np.ndarray:
+    Note that `color` can also be an RGB(A) string in various formats.
+    """
     if isinstance(color, str):
         try:
-            rgb_color = COLORS[color]
-        except KeyError:
+            parsed_color = getrgb(color)
+        except ValueError:
             raise ValueError(
-                f"Unknown color '{color}'. Available colors: {list(COLORS.keys())}"
+                f"Unknown color '{color}'. See documentation for available colors."
             )
-    else:
-        rgb_color = list(color)
+        else:
+            color = parsed_color
 
-    return np.array(rgb_color + [int(255 * opacity)])
+    _rgba = np.array(list(color[:3]) + [int(255 * opacity)]).astype(int)
+
+    if np.any(_rgba < 0) or np.any(_rgba > 255):
+        raise ValueError(
+            f"Channel values must be between 0 and 255. Got {tuple(_rgba)} instead."
+        )
+
+    return _rgba
 
 
 def generate_overlay(
     segment_mask: np.ndarray,
     segments_to_color: Union[np.ndarray, List[int]],
-    color: Union[str, Tuple[int]],
+    color: Union[str, Tuple[int, int, int]],
     opacity: float,
 ) -> np.ndarray:
     """Generate a semi-transparent overlay with selected segments colored.
@@ -168,12 +170,23 @@ def generate_overlay(
         An array that contains the integer segment numbers of the segments to color.
         Usually obtained through :meth:`visualime.visualize.select_segments`.
 
-    color : str or 3-tuple of ints
+    color : str or int 3-tuple (RGB)
         The color for the segments.
-        Can be a pre-defined color name or an RGB tuple.
+        Can be given as a color name or an RGB tuple.
+
+        Color names are parsed through :meth:`PIL.ImageColor.getrgb`.
+        To obtain a list of available color names, run:
+
+        >>> from PIL.ImageColor import colormap, getrgb
+        >>> for color_name, color_code in colormap.items(): print(color_name, getrgb(color_code))
+
+        Note that while it is possible to pass an RGBA tuple, only the RGB values
+        will be considered.
+        The alpha channel is controlled exclusively via the `opacity` parameter.
 
     opacity : float
-        The opacity of the overlay as a number between `0.0` and `1.0`.
+        The opacity of the overlay as a number between `0.0` (fully transparent)
+        and `1.0` (fully opaque).
 
     Returns
     -------

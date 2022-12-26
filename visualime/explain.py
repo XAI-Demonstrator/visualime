@@ -142,8 +142,8 @@ def render_explanation(
     image: np.ndarray,
     segment_mask: np.ndarray,
     segment_weights: np.ndarray,
-    positive: Optional[Union[Tuple[int], str]] = "green",
-    negative: Optional[Union[Tuple[int], str]] = None,
+    positive: Optional[Union[Tuple[int, int, int], str]] = "green",
+    negative: Optional[Union[Tuple[int, int, int], str]] = None,
     opacity: float = 0.7,
     coverage: float = 0.2,
 ) -> PIL_Image:
