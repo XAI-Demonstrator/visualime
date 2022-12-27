@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - '.github/workflows/docs.yml'
+      - 'requirements-docs.txt'
       - 'docs/**'
       - 'visualime/**'
   workflow_dispatch:
