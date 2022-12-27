@@ -13,3 +13,4 @@ visualime.egg-info/
 
 # doc artifacts
 docs/build/**
+docs/source/user_guide/**

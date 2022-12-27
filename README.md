@@ -4,14 +4,16 @@
 [![Documentation Status](https://readthedocs.org/projects/visualime/badge/?version=latest)](https://visualime.readthedocs.io/en/latest/?badge=latest)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-_VisuaLIME_ is an implementation of _LIME_ [1] focused on producing visual local explanations
-for image classifiers created as part of the
-[XAI Demonstrator project](https://github.com/XAI-Demonstrator/xai-demonstrator).
+_VisuaLIME_ is an implementation of _LIME_ (Local Interpretable Model-Agnostic Explanations) [1]
+focused on producing visual local explanations for image classifiers.
 
 In contrast to the [reference implementation](https://github.com/marcotcr/lime), _VisuaLIME_
 exclusively supports image classification and gives its users full control over the
 properties of the generated explanations.
 It was written to produce stable, reliable, and expressive explanations at scale.
+
+_VisuaLIME_ was created as part of the
+[XAI Demonstrator project](https://github.com/XAI-Demonstrator/xai-demonstrator).
 
 **A full documentation is available on [visualime.readthedocs.io](https://visualime.readthedocs.io/).**
 
