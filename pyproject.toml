@@ -1,3 +1,30 @@
 [build-system]
-requires = ["setuptools>=62.6"]
+requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "visualime"
+description = "Implementation of LIME focused on producing user-centric local explanations for image classifiers."
+requires-python = ">=3.8"
+authors = [
+    { name = "Kilian Kluge", email = "dev@kluge.ai" },
+    { name = "The XAI Demonstrator team", email = "xai.demonstrator@gmail.com" }
+]
+license = { text = "Apache 2.0 License" }
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent"
+]
+dynamic = ["version", "dependencies", "readme"]
+
+[project.urls]
+"Documentation" = "https://visualime.readthedocs.io/"
+"Repository" = "https://github.com/xai-demonstrator/visualime"
+"Bug Tracker" = "https://github.com/xai-demonstrator/visualime/issues"
+
+[tool.setuptools.dynamic]
+version = { attr = "visualime.__version__" }
+dependencies = { file = "requirements.txt" }
+readme = { file = "README.md" }
