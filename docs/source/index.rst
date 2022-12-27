@@ -27,3 +27,4 @@ Contents
    lime
    feature_selection
    visualize
+   user_guide/index
