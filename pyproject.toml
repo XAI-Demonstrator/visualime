@@ -8,7 +8,7 @@ description = "Implementation of LIME focused on producing user-centric local ex
 requires-python = ">=3.8"
 authors = [
     { name = "Kilian Kluge", email = "dev@kluge.ai" },
-    { name = "The XAI Demonstrator team", email = "xai.demonstrator@gmail.com" }
+    { name = "The VisuaLIME developers", email = "xai.demonstrator@gmail.com" }
 ]
 license = { text = "Apache 2.0 License" }
 classifiers = [
