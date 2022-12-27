@@ -14,7 +14,7 @@ def exponential_kernel(distances: np.ndarray, kernel_width: float = 0.25):
     distances : np.ndarray
         One-dimensional array as returned by :meth:`visualime.lime.compute_distances`.
 
-    kernel_width : float, default 1.0
+    kernel_width : float, default 0.25
         Width of the exponential kernel.
     """
     return np.sqrt(np.exp(-(distances**2) / kernel_width**2))
@@ -28,7 +28,7 @@ DISTANCES_KERNEL_DOC = """distances : np.ndarray, optional
         Note that this is only a rough approximation and not a good measure if the image
         contains a lot of variation or the segments are of very different size.
 
-    kernel : callable, default default_kernel
+    kernel : callable, default exponential_kernel
         Kernel function to weigh the samples based on the `distances`.
 
         Operates on the `distances` and returns an array of the same shape:

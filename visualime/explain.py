@@ -28,7 +28,7 @@ def explain_classification(
     num_segments_to_select: Optional[int] = 0,
 ) -> Tuple[np.ndarray, np.ndarray]:
     """Explain why the classifier called through `predict_fn` classifies the `image` into
-    a particular class using the _LIME_ algorithm.
+    a particular class using the LIME algorithm.
 
     For more detailed control, we recommend you create your own function, using this
     function as a template.
@@ -53,7 +53,7 @@ def explain_classification(
         See :meth:`visualime.lime.create_segments` for available methods.
 
     segmentation_settings : dict, optional
-        The parameters to be passed to the segmentation method.
+        Keyword arguments to pass to the segmentation method.
         See :meth:`visualime.lime.create_segments` for details.
 
     num_of_samples : int, default 64
@@ -147,7 +147,8 @@ def render_explanation(
     opacity: float = 0.7,
     coverage: float = 0.2,
 ) -> PIL_Image:
-    """Render a visual explanation from the `segment_mask` and `segment_weights` produced by `explain_classification()`.
+    """Render a visual explanation from the `segment_mask` and `segment_weights`
+     produced by :meth:`visualime.explain.explain_classification`.
 
     Parameters
     ----------

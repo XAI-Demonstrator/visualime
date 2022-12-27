@@ -81,8 +81,8 @@ def create_segments(
         <https://scikit-image.org/docs/stable/api/skimage.segmentation.html>`_
         for details.
 
-    segmentation_settings : Dict[str, Any], optional
-        The keyword arguments passed to the segmentation methods.
+    segmentation_settings : dict, optional
+        Keyword arguments to pass to the segmentation method.
 
         See the `scikit-image documentation
         <https://scikit-image.org/docs/stable/api/skimage.segmentation.html>`_
@@ -199,7 +199,7 @@ def predict_images(
     images : np.ndarray
         Images as an array of shape `(num_of_samples, image_width, image_height, 3)`.
 
-    predict_fn : Callable
+    predict_fn : callable
         A function that takes an input of shape `(num_of_samples, image_width, image_height, 3)`
         and returns an array of shape `(num_of_samples, num_of_classes)`, where `num_of_classes`
         is the number of output classes (labels) assigned by the model.
