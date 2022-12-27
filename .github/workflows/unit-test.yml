@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - '.github/workflows/unit-test.yml'
+      - 'requirements.txt'
+      - 'requirements-test.txt'
       - 'tests/**'
       - 'visualime/**'
   workflow_dispatch:
