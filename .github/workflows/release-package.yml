@@ -8,7 +8,7 @@ on:
     paths-ignore:
       - '.github/**'
       - 'docs/**'
-    workflow-dispatch:
+  workflow-dispatch:
 
 jobs:
   build:
@@ -79,7 +79,7 @@ jobs:
       - name: Prepare unit tests
         run: |
           mv repository/tests .
-          rm -r repository
+          rm -rf repository
 
       - name: Run unit tests against package
         run: |
