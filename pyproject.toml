@@ -24,6 +24,9 @@ dynamic = ["version", "dependencies", "readme"]
 "Repository" = "https://github.com/xai-demonstrator/visualime"
 "Bug Tracker" = "https://github.com/xai-demonstrator/visualime/issues"
 
+[tool.setuptools]
+packages = ["visualime"]
+
 [tool.setuptools.dynamic]
 version = { attr = "visualime.__version__" }
 dependencies = { file = "requirements.txt" }
