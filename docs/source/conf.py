@@ -30,6 +30,7 @@ extensions = [
     "sphinx.ext.ifconfig",
     "sphinx.ext.viewcode",
     "sphinx.ext.imgmath",
+    "sphinx_gallery.gen_gallery",
 ]
 
 intersphinx_mapping = {
@@ -67,3 +68,12 @@ numpydoc_xref_aliases = {
     "floats": "float",
 }
 numpydoc_validation_checks = {"all", "GL01", "SA04", "RT03"}
+
+# -- Options for Sphinx-Gallery
+sphinx_gallery_conf = {
+    "examples_dirs": "../user_guide",  # path to your example scripts
+    "gallery_dirs": "./user_guide",  # path to where to save gallery generated output
+    "image_scrapers": ("matplotlib",),
+    "filename_pattern": "/",
+    "compress_images": ("images", "thumbnails"),
+}
