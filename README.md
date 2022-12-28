@@ -1,8 +1,11 @@
 # VisuaLIME
+
+<!-- EXCLUDE -->
 [![Unit Test Status](https://github.com/XAI-Demonstrator/visualime/workflows/Unit%20Test/badge.svg?branch=main)](https://github.com/XAI-Demonstrator/visualime/actions/workflows/unit-test.yml)
 [![Coverage Status](https://coveralls.io/repos/github/XAI-Demonstrator/visualime/badge.svg?branch=main)](https://coveralls.io/github/XAI-Demonstrator/visualime?branch=main)
 [![Documentation Status](https://readthedocs.org/projects/visualime/badge/?version=latest)](https://visualime.readthedocs.io/en/latest/?badge=latest)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+<!-- /EXCLUDE -->
 
 _VisuaLIME_ is an implementation of _LIME_ (Local Interpretable Model-Agnostic Explanations) [1]
 focused on producing visual local explanations for image classifiers.
@@ -61,6 +64,7 @@ explanation = render_explanation(
 For a full example, see
 [the example notebook on GitHub](https://github.com/xai-demonstrator/visualime/blob/main/example.ipynb).
 
+<!-- EXCLUDE -->
 ## Roadmap
 
 - Verify that the algorithm matches the original LIME and document differences
@@ -68,6 +72,7 @@ For a full example, see
 - Include utilities to assess and tune explanations for stability and truthfulness
 - Provide a best practice example of implementing a fully configurable LIME explainer
 - Add support for BayLIME
+<!-- /EXCLUDE -->
 
 ## References
 

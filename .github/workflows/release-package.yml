@@ -22,6 +22,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Remove irrelevant parts from README
+        run: |
+          # Delete everything between EXCLUDE-"tags"
+          awk '/<!-- EXCLUDE -->/,/<!-- \/EXCLUDE -->/ { next } { print }' README.md > tmp_readme
+          rm README.md
+          # Allow at most single blank lines
+          awk '{ /^\s*$/ ?b++:b=0; if (b<=1) print }' tmp_readme > README.md
+
       - name: Install build tools
         run: |
           python -m pip install --upgrade pip
