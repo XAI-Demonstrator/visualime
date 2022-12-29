@@ -5,6 +5,8 @@
 [![Coverage Status](https://coveralls.io/repos/github/XAI-Demonstrator/visualime/badge.svg?branch=main)](https://coveralls.io/github/XAI-Demonstrator/visualime?branch=main)
 [![Documentation Status](https://readthedocs.org/projects/visualime/badge/?version=latest)](https://visualime.readthedocs.io/en/latest/?badge=latest)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![PyPI version](https://img.shields.io/pypi/v/visualime)](https://pypi.org/project/visualime/)
+[![PyPI - Status](https://img.shields.io/pypi/status/visualime)](https://pypi.org/project/visualime/)
 <!-- /EXCLUDE -->
 
 _VisuaLIME_ is an implementation of _LIME_ (Local Interpretable Model-Agnostic Explanations) [1]
