@@ -10,6 +10,7 @@ authors = [
     { name = "Kilian Kluge", email = "dev@kluge.ai" },
     { name = "The VisuaLIME developers", email = "xai.demonstrator@gmail.com" }
 ]
+readme = "README.md"
 license = { text = "Apache 2.0 License" }
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -17,7 +18,7 @@ classifiers = [
     "License :: OSI Approved :: Apache Software License",
     "Operating System :: OS Independent"
 ]
-dynamic = ["version", "dependencies", "readme"]
+dynamic = ["version", "dependencies"]
 
 [project.urls]
 "Documentation" = "https://visualime.readthedocs.io/"
@@ -30,4 +31,3 @@ packages = ["visualime"]
 [tool.setuptools.dynamic]
 version = { attr = "visualime.__version__" }
 dependencies = { file = "requirements.txt" }
-readme = { file = "README.md" }
