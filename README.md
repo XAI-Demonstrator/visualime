@@ -69,9 +69,10 @@ For a full example, see
 
 - Verify that the algorithm matches the original LIME and document differences
 - Add performance benchmarks and optimize implementation of the algorithm
-- Include utilities to assess and tune explanations for stability and truthfulness
-- Provide a best practice example of implementing a fully configurable LIME explainer
-- Add support for BayLIME
+- Include utilities to assess and tune explanations for stability and faithfulness
+- Create a user guide that walks through a best practice example of implementing
+  a fully configurable LIME explainer
+- Add support for BayLIME ([arXiv](https://arxiv.org/abs/2012.03058v5), [GitHub](https://github.com/x-y-zhao/BayLime))
 <!-- /EXCLUDE -->
 
 ## References
