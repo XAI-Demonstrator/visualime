@@ -79,6 +79,37 @@ This is what generating an explanation with *VisuaLIME* looks like in code:
 For a full, interactive example with more detailed instructions, see
 `the example notebook on GitHub <https://github.com/xai-demonstrator/visualime/blob/main/example.ipynb>`_.
 
+Why VisuaLIME?
+**************
+
+We initially used [the original LIME implementation](https://github.com/marcotcr/lime) in our
+[XAI Demonstrator](https://github.com/xai-demonstrator/xai-demonstrator) project.
+After a while, we faced the issue that this version gives you very little control over how the
+explanation is rendered.
+In fact, the way segments are colored is somewhat misleading,
+as the opacity is based not on the weight of a segment
+[but the maximum value of any color channel of the original image](https://github.com/marcotcr/lime/blob/master/lime/lime_image.py#L85)
+within the segment.
+
+The original implementation is a classic example of "research code":
+Written while conceiving and exploring a new algorithm, with lots of hard-to-follow data manipulation
+and cluttered with abandoned experiments.
+While it serves its purpose as a research tool, the tight coupling between the different components and
+its poor test coverage make it hard to extend or adapt.
+
+To our knowledge, there was only one other LIME implementation that is not directly based
+on the original implementation.
+The popular PyTorch interpretability library [Captum](https://captum.ai) contains
+[a version](https://github.com/pytorch/captum/blob/master/captum/attr/_core/lime.py)
+which (in line with the general approach of the library) is relatively low-level.
+For example, users are expected to provide their own similarity functions and take care of input segmentation.
+
+Hence, we decided to write our own version, specifically tailored towards computer vision applications
+and the generation of explanations for end-users.
+Similar to the original implementation, we've opted for `numpy` and `scikit-learn` as the foundation.
+We have structured the library around the idea of an "explanation pipeline",
+a chain of small, exchangeable building blocks that can be selected according to the particular use case.
+
 Package overview
 ****************
 
