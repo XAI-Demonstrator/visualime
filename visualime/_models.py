@@ -2,11 +2,15 @@ from typing import Any, Dict, Optional
 
 from sklearn.linear_model import BayesianRidge, Lasso, LinearRegression, Ridge
 
+from .baylime import BayesianRidgeFixedAlphaLambda, BayesianRidgeFixedLambda
+
 LINEAR_MODELS = {
+    "linear_regression": LinearRegression,
+    "lasso": Lasso,
     "ridge": Ridge,
     "bayesian_ridge": BayesianRidge,
-    "lasso": Lasso,
-    "linear_regression": LinearRegression,
+    "bayesian_ridge_fixed_lambda": BayesianRidgeFixedLambda,
+    "bayesian_ridge_fixed_alpha_lambda": BayesianRidgeFixedAlphaLambda,
 }
 
 MODEL_TYPE_PARAMS_DOC = f"""model_type : str
