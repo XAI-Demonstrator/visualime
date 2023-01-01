@@ -322,11 +322,13 @@ def scale_opacity(
 
 
 def smooth_weights(segment_weights: np.ndarray) -> np.ndarray:
-    """Smooth the `segment_weights`.
+    """Smooth the `segment_weights` by applying the sigmoid function.
 
     Parameters
     ----------
     segment_weights : np.ndarray
+        The weights produced by :meth:`visualime.lime.weigh_segments`:
+        A one-dimensional array of length `num_of_segments`.
 
     Returns
     -------
