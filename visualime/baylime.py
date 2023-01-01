@@ -1,10 +1,9 @@
-"""BayLIME extension.
-
-*BayLIME* (Bayesian Local Interpretable Model-Agnostic Explanations) [1] is an extension of LIME [2]
+"""*BayLIME* (Bayesian Local Interpretable Model-Agnostic Explanations) [1] is an extension of LIME [2]
 that exploits prior knowledge and Bayesian reasoning.
 
 [1] Zhao et al. (2021): *BayLIME: Bayesian Local Interpretable Model-Agnostic Explanations.*
 `arXiv:2012.03058 <https://arxiv.org/abs/2012.03058>`_
+
 [2] Ribeiro et al. (2016): *"Why Should I Trust You?": Explaining the Predictions of Any Classifier.*
 `arXiv:1602.04938 <https://arxiv.org/abs/1602.04938>`_
 """
@@ -26,7 +25,7 @@ class BayesianRidgeFixedLambda(BayesianRidge):
     of available parameters.
     """
 
-    def __init__(self, *, epsilon=1e-6, large_number=1e9, **kwargs):
+    def __init__(self, *, epsilon: float = 1e-6, large_number: int = 1e9, **kwargs):
         if "lambda_init" not in kwargs:
             raise ValueError("'lambda_init' must be set.")
 
@@ -65,7 +64,7 @@ class BayesianRidgeFixedAlphaLambda(BayesianRidge):
     of available parameters.
     """
 
-    def __init__(self, *, epsilon=1e-6, large_number=1e9, **kwargs):
+    def __init__(self, *, epsilon: float = 1e-6, large_number: int = 1e9, **kwargs):
         if "alpha_init" not in kwargs:
             raise ValueError("'alpha_init' must be set.")
         if "lambda_init" not in kwargs:

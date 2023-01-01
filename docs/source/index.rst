@@ -27,4 +27,5 @@ Contents
    lime
    feature_selection
    visualize
+   baylime
    user_guide/index

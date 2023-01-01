@@ -113,7 +113,7 @@ a chain of small, exchangeable building blocks that can be selected according to
 Package overview
 ****************
 
-*VisuaLIME* is currently structured into four modules:
+*VisuaLIME* is currently structured into five modules:
 
 - :doc:`explain`: Pre-configured explanation pipelines.
   Ideal as a starting point for new users and reference for custom implementations.
@@ -121,6 +121,7 @@ Package overview
   Custom explanations pipelines can be created by chaining these functions.
 - :doc:`feature_selection`: Functions to select which features (image segments) to consider for the explanation.
 - :doc:`visualize`: Functions to render visual explanations that are comprehensible for humans.
+- :doc:`baylime`: Additional functions and classes to implement the *BayLIME* framework.
 
 .. automodule:: visualime
    :members:
