@@ -148,7 +148,7 @@ def render_explanation(
     coverage: float = 0.2,
 ) -> PIL_Image:
     """Render a visual explanation from the `segment_mask` and `segment_weights`
-     produced by :meth:`visualime.explain.explain_classification`.
+    produced by :meth:`visualime.explain.explain_classification`.
 
     Parameters
     ----------
