@@ -44,7 +44,7 @@ class BayesianRidgeFixedLambda(BayesianRidge):
         if abs(self.lambda_ - self.lambda_init) > self.epsilon:
             warn(
                 f"lambda changed by more than {self.epsilon:.2E}. See documentation for details.",
-                RuntimeWarning,
+                UserWarning,
             )
 
     fit.__doc__ = BayesianRidge.fit.__doc__
@@ -92,13 +92,13 @@ class BayesianRidgeFixedAlphaLambda(BayesianRidge):
         if abs(self.lambda_ - self.lambda_init) > self.epsilon:
             warn(
                 f"lambda changed by more than {self.epsilon:.2E}. See documentation for details.",
-                RuntimeWarning,
+                UserWarning,
             )
 
         if abs(self.alpha_ - self.alpha_init) > self.epsilon:
             warn(
-                f"lambda changed by more than {self.epsilon:.2E}. See documentation for details.",
-                RuntimeWarning,
+                f"alpha changed by more than {self.epsilon:.2E}. See documentation for details.",
+                UserWarning,
             )
 
     fit.__doc__ = BayesianRidge.fit.__doc__
