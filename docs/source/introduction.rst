@@ -82,13 +82,13 @@ For a full, interactive example with more detailed instructions, see
 Why VisuaLIME?
 **************
 
-We initially used [the original LIME implementation](https://github.com/marcotcr/lime) in our
-[XAI Demonstrator](https://github.com/xai-demonstrator/xai-demonstrator) project.
+We initially used `the original LIME implementation <https://github.com/marcotcr/lime>`_ in our
+`XAI Demonstrator <https://github.com/xai-demonstrator/xai-demonstrator>`_ project.
 After a while, we faced the issue that this version gives you very little control over how the
 explanation is rendered.
 In fact, the way segments are colored is somewhat misleading,
 as the opacity is based not on the weight of a segment
-[but the maximum value of any color channel of the original image](https://github.com/marcotcr/lime/blob/master/lime/lime_image.py#L85)
+`but the maximum value of any color channel of the original image <https://github.com/marcotcr/lime/blob/master/lime/lime_image.py#L85>`_
 within the segment.
 
 The original implementation is a classic example of "research code":
@@ -99,8 +99,8 @@ its poor test coverage make it hard to extend or adapt.
 
 To our knowledge, there was only one other LIME implementation that is not directly based
 on the original implementation.
-The popular PyTorch interpretability library [Captum](https://captum.ai) contains
-[a version](https://github.com/pytorch/captum/blob/master/captum/attr/_core/lime.py)
+The popular PyTorch interpretability library `Captum <https://captum.ai>`_ contains
+`a version <https://github.com/pytorch/captum/blob/master/captum/attr/_core/lime.py>`_
 which (in line with the general approach of the library) is relatively low-level.
 For example, users are expected to provide their own similarity functions and take care of input segmentation.
 

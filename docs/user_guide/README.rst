@@ -8,4 +8,4 @@ for a particular use case.
 .. note::
 
    You have a question that is not yet answered? Please let us know by
-   [opening an issue on GitHub](https://github.com/XAI-Demonstrator/visualime/issues).
+   `opening an issue on GitHub <https://github.com/XAI-Demonstrator/visualime/issues>`_.
