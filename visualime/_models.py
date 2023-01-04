@@ -1,10 +1,19 @@
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Literal, Optional
 
 from sklearn.linear_model import BayesianRidge, Lasso, LinearRegression, Ridge
 
 from .baylime import BayesianRidgeFixedAlphaLambda, BayesianRidgeFixedLambda
 
-LINEAR_MODELS = {
+LINEAR_MODEL_TYPES = Literal[
+    "linear_regression",
+    "lasso",
+    "ridge",
+    "bayesian_ridge",
+    "bayesian_ridge_fixed_lambda",
+    "bayesian_ridge_fixed_alpha_lambda",
+]
+
+LINEAR_MODELS: Dict[LINEAR_MODEL_TYPES, Any] = {
     "linear_regression": LinearRegression,
     "lasso": Lasso,
     "ridge": Ridge,
@@ -30,7 +39,9 @@ MODEL_TYPE_PARAMS_DOC = f"""model_type : str
         for details on each of the models."""
 
 
-def instantiate_model(model_type: str, model_params: Optional[Dict[str, Any]] = None):
+def instantiate_model(
+    model_type: LINEAR_MODEL_TYPES, model_params: Optional[Dict[str, Any]] = None
+):
     model_params = model_params or {}
 
     try:

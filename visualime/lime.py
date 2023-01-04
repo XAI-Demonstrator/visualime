@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Literal, Optional, Tuple, Union
 
 import numpy as np
 from skimage.color import rgb2gray
@@ -14,7 +14,11 @@ __all__ = [
     "weigh_segments",
 ]
 
-from visualime._models import MODEL_TYPE_PARAMS_DOC, instantiate_model
+from visualime._models import (
+    LINEAR_MODEL_TYPES,
+    MODEL_TYPE_PARAMS_DOC,
+    instantiate_model,
+)
 from visualime.metrics import DISTANCES_KERNEL_DOC, cosine_distance, exponential_kernel
 
 SAMPLES_PREDICTIONS_LABEL_IDX_DOC = """samples : np.ndarray
@@ -35,7 +39,11 @@ def _watershed(image: np.ndarray, **kwargs):
     return watershed(image=gradient, **kwargs)
 
 
-SEGMENTATION_METHODS = {
+SEGMENTATION_METHOD_TYPES = Literal["felzenszwalb", "slic", "quickshift", "watershed"]
+
+SEGMENTATION_METHODS: Dict[
+    SEGMENTATION_METHOD_TYPES, Tuple[Callable, Dict[str, Any]]
+] = {
     "felzenszwalb": (felzenszwalb, {"scale": 250, "sigma": 0.6, "min_size": 45}),
     "slic": (
         slic,
@@ -54,7 +62,7 @@ SEGMENTATION_METHODS = {
 
 def create_segments(
     image: np.ndarray,
-    segmentation_method: str,
+    segmentation_method: SEGMENTATION_METHOD_TYPES,
     segmentation_settings: Optional[Dict[str, Any]] = None,
 ) -> np.ndarray:
     """Divide the image into segments (superpixels).
@@ -275,7 +283,7 @@ def weigh_segments(
     samples: np.ndarray,
     predictions: np.ndarray,
     label_idx: int,
-    model_type: str = "bayesian_ridge",
+    model_type: LINEAR_MODEL_TYPES = "bayesian_ridge",
     model_params: Optional[Dict[str, Any]] = None,
     distances: Optional[np.ndarray] = None,
     kernel: Callable[[np.ndarray], np.ndarray] = exponential_kernel,

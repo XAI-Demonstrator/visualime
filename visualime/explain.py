@@ -5,6 +5,7 @@ from PIL import Image
 from PIL.Image import Image as PIL_Image
 
 from .feature_selection import forward_selection, select_by_weight
+from .lime import SEGMENTATION_METHOD_TYPES  # noqa
 from .lime import (
     compute_distances,
     create_segments,
@@ -20,7 +21,7 @@ def explain_classification(
     image: np.ndarray,
     predict_fn: Callable[[np.ndarray], np.ndarray],
     label_idx: Optional[int] = None,
-    segmentation_method: str = "slic",
+    segmentation_method: SEGMENTATION_METHOD_TYPES = "slic",
     segmentation_settings: Optional[Dict[str, Any]] = None,
     num_of_samples: int = 64,
     p: float = 0.33,
