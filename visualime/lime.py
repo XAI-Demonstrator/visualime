@@ -228,7 +228,7 @@ def predict_images(
 def compute_distances(
     image: np.ndarray,
     images: np.ndarray,
-    norm: Optional[Union[str, int]] = None,
+    norm: Optional[Union[Literal["fro", "nuc"], int]] = None,
     select: str = "sum",
 ) -> np.ndarray:
     """Calculate the distances between the original `image` and the generated `images`.

@@ -114,7 +114,7 @@ def select_segments(
         coverage = min(coverage, max_coverage, 1.0)
         coverage = max(coverage, min_coverage, 0.0)
 
-        for i in range(max_segment_idx - 1):
+        for i in range(max_segment_idx):
             _selected_segments = ordered_segments[: i + 1]
             if np.isin(segment_mask, _selected_segments).sum() / _area >= coverage:
                 num_of_segments = i + 1
