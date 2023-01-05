@@ -25,7 +25,7 @@ class BayesianRidgeFixedLambda(BayesianRidge):
     of available parameters.
     """
 
-    def __init__(self, *, epsilon: float = 1e-6, large_number: int = 1e9, **kwargs):
+    def __init__(self, *, epsilon: float = 1e-6, large_number: float = 1e9, **kwargs):
         if "lambda_init" not in kwargs:
             raise ValueError("'lambda_init' must be set.")
 
@@ -64,7 +64,7 @@ class BayesianRidgeFixedAlphaLambda(BayesianRidge):
     of available parameters.
     """
 
-    def __init__(self, *, epsilon: float = 1e-6, large_number: int = 1e9, **kwargs):
+    def __init__(self, *, epsilon: float = 1e-6, large_number: float = 1e9, **kwargs):
         if "alpha_init" not in kwargs:
             raise ValueError("'alpha_init' must be set.")
         if "lambda_init" not in kwargs:

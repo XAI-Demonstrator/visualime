@@ -1,15 +1,17 @@
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 import numpy as np
 from sklearn.feature_selection import SelectFromModel
 from sklearn.linear_model import lars_path
 
-from ._models import MODEL_TYPE_PARAMS_DOC, instantiate_model
+from ._models import LINEAR_MODEL_TYPES, MODEL_TYPE_PARAMS_DOC, instantiate_model
 from .lime import SAMPLES_PREDICTIONS_LABEL_IDX_DOC
 from .metrics import DISTANCES_KERNEL_DOC, cosine_distance, exponential_kernel
 
 
-def _get_num_segments(samples: np.ndarray, num_segments_to_select: Optional[int]):
+def _get_num_segments(
+    samples: np.ndarray, num_segments_to_select: Optional[int]
+) -> Tuple[int, int]:
     num_segments = samples.shape[1]
     num_segments_to_select = num_segments_to_select or num_segments
     if num_segments_to_select > num_segments:
@@ -24,7 +26,7 @@ def select_by_weight(
     samples: np.ndarray,
     predictions: np.ndarray,
     label_idx: int,
-    model_type: str = "bayesian_ridge",
+    model_type: LINEAR_MODEL_TYPES = "bayesian_ridge",
     model_params: Optional[Dict[str, Any]] = None,
     distances: Optional[np.ndarray] = None,
     kernel: Callable[[np.ndarray], np.ndarray] = exponential_kernel,
@@ -76,7 +78,7 @@ def forward_selection(
     samples: np.ndarray,
     predictions: np.ndarray,
     label_idx: int,
-    model_type: str = "ridge",
+    model_type: LINEAR_MODEL_TYPES = "ridge",
     model_params: Optional[Dict[str, Any]] = None,
     distances: Optional[np.ndarray] = None,
     kernel: Callable[[np.ndarray], np.ndarray] = exponential_kernel,
@@ -94,20 +96,22 @@ def forward_selection(
     linear_model = instantiate_model(model_type=model_type, model_params=model_params)
 
     # TODO: Wait for https://github.com/scikit-learn/scikit-learn/issues/25236
-    def score(current_features: List[int], next_feature_idx: int):
+    def score(current_features: List[int], next_feature_idx: int) -> float:
         linear_model.fit(
             samples[:, current_features + [next_feature_idx]],
             predictions[:, label_idx],
             sample_weight=sample_weight,
         )
 
-        return linear_model.score(
-            samples[:, current_features + [next_feature_idx]],
-            predictions[:, label_idx],
-            sample_weight=sample_weight,
+        return float(
+            linear_model.score(
+                samples[:, current_features + [next_feature_idx]],
+                predictions[:, label_idx],
+                sample_weight=sample_weight,
+            )
         )
 
-    selected_segments = []
+    selected_segments: List[int] = []
     for _ in range(num_segments_to_select):
         selectable_segments = set(range(num_segments)) - set(selected_segments)
         scores = (

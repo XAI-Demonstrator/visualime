@@ -4,6 +4,7 @@ import numpy as np
 from PIL import Image
 from PIL.Image import Image as PIL_Image
 
+from ._models import LINEAR_MODEL_TYPES
 from .feature_selection import forward_selection, select_by_weight
 from .lime import SEGMENTATION_METHOD_TYPES  # noqa
 from .lime import (
@@ -83,7 +84,7 @@ def explain_classification(
     --------
     TODO: Add end-to-end example
     """
-    model_type = "bayesian_ridge"
+    model_type: LINEAR_MODEL_TYPES = "bayesian_ridge"
 
     if label_idx is None:
         label_idx = int(np.argmax(predict_fn(image[None, :, :, :])))

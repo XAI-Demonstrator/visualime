@@ -31,3 +31,19 @@ packages = ["visualime"]
 [tool.setuptools.dynamic]
 version = { attr = "visualime.__version__" }
 dependencies = { file = "requirements.txt" }
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+
+[[tool.mypy.overrides]]
+module = [
+    "numpy",
+    "sklearn",
+    "sklearn.*",
+    "skimage",
+    "skimage.*",
+    "PIL",
+    "PIL.*"
+]
+ignore_missing_imports = true

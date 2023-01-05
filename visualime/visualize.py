@@ -1,5 +1,5 @@
 import warnings
-from typing import List, Optional, Tuple, Union
+from typing import List, Literal, Optional, Tuple, Union
 
 import numpy as np
 from PIL.ImageColor import getrgb
@@ -233,7 +233,7 @@ def scale_opacity(
     segment_mask: np.ndarray,
     segment_weights: np.ndarray,
     segments_to_color: Union[np.ndarray, List[int]],
-    relative_to: Union[str, float] = "max",
+    relative_to: Union[Literal["max"], float] = "max",
     exponent: float = 1.0,
     max_opacity: float = 1.0,
 ) -> np.ndarray:
