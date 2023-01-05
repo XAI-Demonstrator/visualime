@@ -205,6 +205,7 @@ def render_explanation(
             segment_weights=segment_weights,
             segment_mask=segment_mask,
             segments_to_color=positive_segments,
+            max_opacity=opacity,
         )
 
         overlay_image = Image.fromarray(positive_overlay.astype(np.uint8), "RGBA")
@@ -223,6 +224,7 @@ def render_explanation(
             segment_weights=segment_weights,
             segment_mask=segment_mask,
             segments_to_color=negative_segments,
+            max_opacity=opacity,
         )
 
         overlay_image = Image.fromarray(negative_overlay.astype(np.uint8), "RGBA")
