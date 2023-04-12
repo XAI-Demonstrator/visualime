@@ -148,6 +148,8 @@ def render_explanation(
     negative: Optional[Union[Tuple[int, int, int], str]] = None,
     opacity: float = 0.7,
     coverage: float = 0.2,
+    num_segments_to_select: int = 0,
+    rgba: bool = True
 ) -> PIL_Image:
     """Render a visual explanation from the `segment_mask` and `segment_weights`
     produced by :meth:`visualime.explain.explain_classification`.
@@ -180,6 +182,9 @@ def render_explanation(
     coverage : float, default 0.2
         The coverage of each overlay relative to the area of the image.
         E.g., if set to 0.2 (the default), about 20% of the image are colored.
+
+    rgba: bool, default True
+        If True, the returned image is an RGBA image. If False, the returned image is an RGB image.
 
     Returns
     -------
@@ -230,4 +235,6 @@ def render_explanation(
         overlay_image = Image.fromarray(negative_overlay.astype(np.uint8), "RGBA")
         final_img.alpha_composite(overlay_image)
 
+    if not rgba:
+        final_img = final_img.convert("RGB")
     return final_img
