@@ -1,4 +1,5 @@
 from typing import Any, Callable, Dict, Optional, Tuple, Union
+import warnings
 
 import numpy as np
 from PIL import Image
@@ -19,15 +20,15 @@ from .visualize import generate_overlay, scale_opacity, select_segments
 
 
 def explain_classification(
-    image: np.ndarray,
-    predict_fn: Callable[[np.ndarray], np.ndarray],
-    label_idx: Optional[int] = None,
-    segmentation_method: SEGMENTATION_METHOD_TYPES = "slic",
-    segmentation_settings: Optional[Dict[str, Any]] = None,
-    num_of_samples: int = 64,
-    p: float = 0.33,
-    segment_selection_method: str = "by_weight",
-    num_segments_to_select: Optional[int] = 0,
+        image: np.ndarray,
+        predict_fn: Callable[[np.ndarray], np.ndarray],
+        label_idx: Optional[int] = None,
+        segmentation_method: SEGMENTATION_METHOD_TYPES = "slic",
+        segmentation_settings: Optional[Dict[str, Any]] = None,
+        num_of_samples: int = 64,
+        p: float = 0.33,
+        segment_selection_method: str = "by_weight",
+        num_segments_to_select: Optional[int] = 0,
 ) -> Tuple[np.ndarray, np.ndarray]:
     """Explain why the classifier called through `predict_fn` classifies the `image` into
     a particular class using the LIME algorithm.
@@ -141,15 +142,17 @@ def explain_classification(
 
 
 def render_explanation(
-    image: np.ndarray,
-    segment_mask: np.ndarray,
-    segment_weights: np.ndarray,
-    positive: Optional[Union[Tuple[int, int, int], str]] = "green",
-    negative: Optional[Union[Tuple[int, int, int], str]] = None,
-    opacity: float = 0.7,
-    coverage: float = 0.2,
-    num_segments_to_select: int = 0,
-    rgba: bool = True
+        image: np.ndarray,
+        segment_mask: np.ndarray,
+        segment_weights: np.ndarray,
+        positive: Optional[Union[Tuple[int, int, int], str]] = "green",
+        negative: Optional[Union[Tuple[int, int, int], str]] = None,
+        opacity: float = 0.7,
+        coverage: Optional[float] = None,
+        num_of_segments: Optional[int] = None,
+        min_num_of_segments: int = 0,
+        max_num_of_segments: Optional[int] = None,
+        rgba: bool = True
 ) -> PIL_Image:
     """Render a visual explanation from the `segment_mask` and `segment_weights`
     produced by :meth:`visualime.explain.explain_classification`.
@@ -179,9 +182,21 @@ def render_explanation(
     opacity : float, default 0.7
         The opacity of the explanation overlay.
 
-    coverage : float, default 0.2
+    coverage : float, optional
         The coverage of each overlay relative to the area of the image.
         E.g., if set to 0.2 (the default), about 20% of the image are colored.
+        If not given, `num_of_segments` is used instead.
+
+    num_of_segments : int, optional
+        The number of segments to be colored.
+        If not given, `coverage` is used instead.
+        If both are not given, `num_of_segments` is prioritized.
+
+    min_num_of_segments : int, default 0
+        The minimum number of segments to be colored.
+
+    max_num_of_segments : int, optional
+        The maximum number of segments to be colored.
 
     rgba: bool, default True
         If True, the returned image is an RGBA image. If False, the returned image is an RGB image.
@@ -195,12 +210,28 @@ def render_explanation(
     --------
     TODO: Add end-to-end example
     """
+    if coverage is None and num_of_segments is None:
+        warnings.warn(
+            "Neither `coverage` nor `num_segments_to_select` is given. Using default `coverage=0.2`.",
+            RuntimeWarning
+        )
+        coverage = 0.2
+
+    if coverage is not None and num_of_segments is not None:
+        warnings.warn(
+            "Both `coverage` and `num_segments_to_select` are given. `num_segments_to_select` will be prioritized.",
+            RuntimeWarning
+        )
+        coverage = None
+
     final_img = Image.fromarray(image.astype(np.uint8), "RGB").convert("RGBA")
 
     if positive is not None:
         positive_segments = select_segments(
-            segment_weights, segment_mask, coverage=coverage
+            segment_weights, segment_mask, coverage=coverage, num_of_segments=num_of_segments,
+            min_num_of_segments=min_num_of_segments, max_num_of_segments=max_num_of_segments
         )
+
         positive_overlay = generate_overlay(
             segment_mask, positive_segments, color=positive, opacity=opacity
         )
@@ -218,7 +249,8 @@ def render_explanation(
 
     if negative is not None:
         negative_segments = select_segments(
-            -segment_weights, segment_mask, coverage=coverage
+            -segment_weights, segment_mask, coverage=coverage, num_of_segments=num_of_segments,
+            min_num_of_segments=min_num_of_segments, max_num_of_segments=max_num_of_segments
         )
         negative_overlay = generate_overlay(
             segment_mask, negative_segments, color=negative, opacity=opacity
