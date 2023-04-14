@@ -176,11 +176,8 @@ def render_explanation(
     coverage : float, optional
         The coverage of each overlay relative to the area of the image.
         E.g., if set to 0.2 (the default), about 20% of the image are colored.
-        If not given, `num_of_segments` is used instead.
     num_of_segments : int, optional
         The number of segments to be colored.
-        If not given, `coverage` is used instead.
-        If both are not given, `num_of_segments` is prioritized.
     min_num_of_segments : int, default 0
         The minimum number of segments to be colored.
     max_num_of_segments : int, optional
