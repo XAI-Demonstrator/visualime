@@ -4,6 +4,7 @@ import pytest
 from visualime.visualize import (
     _get_color,
     generate_overlay,
+    mark_boundaries,
     scale_opacity,
     select_segments,
 )
@@ -308,3 +309,29 @@ def test_that_invalid_channel_values_raise_exception():
 @pytest.mark.parametrize("color", ["salmon", [12, 24, 48], [0, 0, 255, 40]])
 def test_that_color_is_always_returned_as_rgba_array(color):
     assert _get_color(color, 1.0).shape == (4,)
+
+
+def test_that_mark_boundaries_rejects_mismatched_mask():
+    with pytest.raises(ValueError):
+        mark_boundaries(image=np.zeros((10, 11)), segment_mask=np.zeros((10, 10)))
+
+    with pytest.raises(ValueError):
+        mark_boundaries(image=np.zeros((10, 10)), segment_mask=np.zeros((10, 11)))
+
+
+def test_that_mark_boundaries_works_for_rgb_images():
+    mark_boundaries(image=np.zeros((10, 10, 3)), segment_mask=np.zeros((10, 10)))
+
+
+def test_that_mark_boundaries_highlights_boundaries():
+    image = np.zeros((10, 10, 3))
+    segment_mask = np.zeros((10, 10), dtype=int)
+    segment_mask[2:5, 2:5] = 1
+
+    marked = mark_boundaries(image=image, segment_mask=segment_mask)
+
+    assert np.all(marked[3:5, 3:5, :] == 0)
+    assert np.all(marked[2:5, 2, 0] == 255)
+    assert np.all(marked[2:5, 5, 0] == 255)
+    assert np.all(marked[2, 2:5, 0] == 255)
+    assert np.all(marked[5, 2:5, 0] == 255)
