@@ -6,6 +6,7 @@ from visualime.visualize import (
     generate_overlay,
     mark_boundaries,
     scale_opacity,
+    scale_overlay,
     select_segments,
 )
 
@@ -283,6 +284,25 @@ def test_that_invalid_relative_to_values_are_handled():
             segments_to_color=segments_to_color,
             relative_to="this-option-does-not-exist-and-never-will",
         )
+
+
+def test_scale_overlay():
+    segment_mask = np.zeros((10, 10), dtype=int)
+    segment_mask[2:7, 2:7] = 1
+    segments_to_color = [1]
+    color = "red"
+    opacity = 1.0
+
+    overlay = generate_overlay(
+        segment_mask=segment_mask,
+        segments_to_color=segments_to_color,
+        color=color,
+        opacity=opacity,
+    )
+
+    scaled_overlay = scale_overlay(overlay=overlay, shape=(100, 100))
+
+    assert scaled_overlay.shape == (100, 100, 4)
 
 
 @pytest.mark.parametrize(

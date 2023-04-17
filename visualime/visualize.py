@@ -2,6 +2,7 @@ import warnings
 from typing import List, Literal, Optional, Tuple, Union
 
 import numpy as np
+from PIL import Image
 from PIL.ImageColor import getrgb
 
 
@@ -318,6 +319,30 @@ def scale_opacity(
         new_overlay[mask, 3] = new_opacity[segment_id]
 
     return new_overlay
+
+
+def scale_overlay(overlay: np.ndarray, shape: Tuple[int, int]) -> np.ndarray:
+    """Scale the overlay to a given size.
+
+    Parameters
+    ----------
+    overlay : np.ndarray
+        The output of :meth:`visualime.visualize.generate_overlay`:
+        An array of shape `(image_width, image_height, 4)` representing an RGBA image.
+
+    shape : tuple of ints
+        The size to scale the overlay to.
+
+    Returns
+    -------
+    np.ndarray
+        An array of shape `(image_width, image_height, 4)` representing an RGBA image.
+
+        Note that this function does not modify the original `overlay` but returns a new array.
+    """
+    return np.array(
+        Image.fromarray(overlay, mode="RGBA").resize(shape, resample=Image.NEAREST)
+    )
 
 
 def mark_boundaries(
