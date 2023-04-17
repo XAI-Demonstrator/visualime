@@ -288,7 +288,11 @@ def test_that_invalid_relative_to_values_are_handled():
 
 def test_scale_overlay():
     segment_mask = np.zeros((10, 10), dtype=int)
-    segment_mask[2:7, 2:7] = 1
+    segment_mask[2, 2] = 1
+    segment_mask[3, 2:3] = 1
+    segment_mask[4, 2:4] = 1
+    segment_mask[5, 2:5] = 1
+
     segments_to_color = [1]
     color = "red"
     opacity = 1.0
@@ -299,6 +303,7 @@ def test_scale_overlay():
         color=color,
         opacity=opacity,
     )
+    # show the overlay
 
     scaled_overlay = scale_overlay(overlay=overlay, shape=(100, 100))
 
