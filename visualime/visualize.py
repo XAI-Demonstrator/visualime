@@ -2,8 +2,8 @@ import warnings
 from typing import List, Literal, Optional, Tuple, Union
 
 import numpy as np
-from PIL import Image
 from PIL.ImageColor import getrgb
+from skimage.transform import resize
 
 
 def select_segments(
@@ -59,7 +59,7 @@ def select_segments(
         At least one segment will be returned even if the maximum coverage is exceeded.
         In this case, a warning will be given.
 
-    min_num_of_segments : int, default 0
+    min_num_of_segments : int, defauoverlaylt 0
         The minimum number of segments to select.
         Even if the specified `coverage` is reached with fewer segments, at least
         this minimum number of segments are returned.
@@ -340,9 +340,7 @@ def scale_overlay(overlay: np.ndarray, shape: Tuple[int, int]) -> np.ndarray:
 
         Note that this function does not modify the original `ove rlay` but returns a new array.
     """
-    return np.array(
-        Image.fromarray(overlay.astype(np.uint8)).resize(shape, resample=Image.BICUBIC)
-    )
+    return resize(overlay, shape, preserve_range=True)
 
 
 def mark_boundaries(
