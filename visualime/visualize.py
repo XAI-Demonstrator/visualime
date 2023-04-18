@@ -59,7 +59,7 @@ def select_segments(
         At least one segment will be returned even if the maximum coverage is exceeded.
         In this case, a warning will be given.
 
-    min_num_of_segments : int, defauoverlaylt 0
+    min_num_of_segments : int, default 0
         The minimum number of segments to select.
         Even if the specified `coverage` is reached with fewer segments, at least
         this minimum number of segments are returned.
