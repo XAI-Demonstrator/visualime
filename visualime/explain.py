@@ -205,6 +205,16 @@ def render_explanation(
 
     final_img = Image.fromarray(image.astype(np.uint8), "RGB").convert("RGBA")
 
+    if positive is not None and negative is not None:
+        if coverage is not None:
+            coverage /= 2
+        if num_of_segments is not None:
+            num_of_segments //= 2
+        if min_num_of_segments is not None:
+            min_num_of_segments //= 2
+        if max_num_of_segments is not None:
+            max_num_of_segments //= 2
+
     if positive is not None:
         positive_segments = select_segments(
             segment_weights,
