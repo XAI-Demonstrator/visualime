@@ -56,7 +56,7 @@ as follows:
 
 *VisuaLIME* conceptually structures the explanation process into two steps:
 
-1. Computing an explanation, which consists of a `segment_mask` and corresponding `segments_weights`
+1. Computing an explanation, which consists of a `segment_mask` and corresponding `segment_weights`
 2. Rendering a visualization of the explanation
 
 This is what generating an explanation with *VisuaLIME* looks like in code:
@@ -97,12 +97,13 @@ and cluttered with abandoned experiments.
 While it serves its purpose as a research tool, the tight coupling between the different components and
 its poor test coverage make it hard to extend or adapt.
 
-To our knowledge, there was only one other LIME implementation that is not directly based
+To our knowledge, there is only one other LIME implementation that is not directly based
 on the original implementation.
 The popular PyTorch interpretability library `Captum <https://captum.ai>`_ contains
 `a version <https://github.com/pytorch/captum/blob/master/captum/attr/_core/lime.py>`_
 which (in line with the general approach of the library) is relatively low-level.
 For example, users are expected to provide their own similarity functions and take care of input segmentation.
+Further, it depends on PyTorch as the computational backend.
 
 Hence, we decided to write our own version, specifically tailored towards computer vision applications
 and the generation of explanations for end-users.
@@ -118,7 +119,7 @@ Package overview
 - :doc:`explain`: Pre-configured explanation pipelines.
   Ideal as a starting point for new users and reference for custom implementations.
 - :doc:`lime`: Contains each step of *LIME* implemented as a separate, independent function.
-  Custom explanations pipelines can be created by chaining these functions.
+  Custom explanation pipelines can be created by chaining these functions.
 - :doc:`feature_selection`: Functions to select which features (image segments) to consider for the explanation.
 - :doc:`visualize`: Functions to render visual explanations that are comprehensible for humans.
 - :doc:`baylime`: Additional functions and classes to implement the *BayLIME* framework.
