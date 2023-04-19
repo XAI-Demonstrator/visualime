@@ -34,3 +34,4 @@ repos:
         args: [ "visualime" ]
         additional_dependencies:
           - 'numpy'
+          - 'types-Pillow'
