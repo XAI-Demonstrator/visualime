@@ -315,10 +315,10 @@ def weigh_segments(
 
     segment_weights = np.array(
         [
-            reduced_weights[segment_subset.index(feature_idx)]
-            if feature_idx in segment_subset
+            reduced_weights[segment_subset.index(segment_idx)]
+            if segment_idx in segment_subset
             else 0.0
-            for feature_idx in range(samples.shape[1])
+            for segment_idx in range(samples.shape[1])
         ]
     )
 

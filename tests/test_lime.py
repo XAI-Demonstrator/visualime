@@ -108,7 +108,25 @@ def test_that_subset_indices_cannot_be_outside_available_range():
         )
 
 
-def test_that_distances_and_segment_subeset_are_generated_if_not_given():
+def test_that_distances_and_segment_subset_are_generated_if_not_given():
     _ = weigh_segments(
         samples=samples, predictions=np.zeros((samples.shape[0], 5)), label_idx=0
+    )
+
+
+def test_that_segments_not_in_segment_subset_get_zero_weight():
+    segment_subset = [1, 2, 5, 6]
+    segment_weights = weigh_segments(
+        samples=samples,
+        predictions=np.random.rand(samples.shape[0], 20),
+        label_idx=0,
+        segment_subset=segment_subset,
+    )
+
+    assert np.all(
+        [
+            weight == 0.0
+            for idx, weight in enumerate(list(segment_weights))
+            if idx not in segment_subset
+        ]
     )
