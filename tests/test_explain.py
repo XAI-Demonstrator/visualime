@@ -47,6 +47,18 @@ def test_end_to_end(segment_selection_method):
         positive="green",
         negative="red",
         coverage=0.2,
+        min_num_of_segments=1,
+        max_num_of_segments=10,
+    )
+
+    _ = render_explanation(
+        image,
+        segment_mask,
+        segment_weights,
+        positive="green",
+        negative="red",
+        coverage=None,
+        num_of_segments=2,
     )
 
 
