@@ -88,7 +88,7 @@ def test_that_weigh_segments_only_accepts_known_models():
         )
 
 
-def test_segment_subset_validation_in_weigh_segments():
+def test_that_subset_indices_cannot_be_below_zero():
     with pytest.raises(ValueError):
         _ = weigh_segments(
             samples=samples,
@@ -97,6 +97,8 @@ def test_segment_subset_validation_in_weigh_segments():
             segment_subset=[-5, 0, 1],
         )
 
+
+def test_that_subset_indices_cannot_be_outside_available_range():
     with pytest.raises(ValueError):
         _ = weigh_segments(
             samples=samples,
@@ -104,3 +106,9 @@ def test_segment_subset_validation_in_weigh_segments():
             label_idx=0,
             segment_subset=[0, 1, 2, MAX_SEGMENT_INDEX + 1],
         )
+
+
+def test_that_distances_and_segment_subeset_are_generated_if_not_given():
+    _ = weigh_segments(
+        samples=samples, predictions=np.zeros((samples.shape[0], 5)), label_idx=0
+    )
