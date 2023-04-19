@@ -338,7 +338,7 @@ def scale_overlay(overlay: np.ndarray, shape: Tuple[int, int]) -> np.ndarray:
     np.ndarray
         An array of shape `(image_width, image_height, 4)` representing an RGBA image.
 
-        Note that this function does not modify the original `ove rlay` but returns a new array.
+        Note that this function does not modify the original `overlay` but returns a new array.
     """
     return resize(overlay, shape, preserve_range=True)
 
