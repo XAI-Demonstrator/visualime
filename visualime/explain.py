@@ -155,6 +155,11 @@ def render_explanation(
 ) -> PIL_Image:
     """Render a visual explanation from the `segment_mask` and `segment_weights`
     produced by :meth:`visualime.explain.explain_classification`.
+
+    Segments are selected in the order of descending weight until the desired `coverage`
+    or `num_of_segments` is reached.
+    Exactly one of these parameters has to be specified when calling the function.
+
     Parameters
     ----------
     image : np.ndarray
@@ -202,8 +207,11 @@ def render_explanation(
     --------
     TODO: Add end-to-end example
     """
+    if coverage is None and num_of_segments is None:
+        raise ValueError("Either coverage or num_of_segments has to be specified.")
 
-    final_img = Image.fromarray(image.astype(np.uint8), "RGB").convert("RGBA")
+    if coverage is not None and num_of_segments is not None:
+        raise ValueError("Only either coverage or num_of_segments can be given.")
 
     if positive is not None and negative is not None:
         if coverage is not None:
@@ -214,6 +222,8 @@ def render_explanation(
             min_num_of_segments = max(min_num_of_segments // 2, 0)
         if max_num_of_segments is not None:
             max_num_of_segments = max(max_num_of_segments // 2, 1)
+
+    final_img = Image.fromarray(image.astype(np.uint8), "RGB").convert("RGBA")
 
     if positive is not None:
         positive_segments = select_segments(
