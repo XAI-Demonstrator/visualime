@@ -162,17 +162,19 @@ def _get_color(color: Union[str, Tuple[int, int, int]], opacity: float) -> np.nd
 
     Note that `color` can also be an RGB(A) string in various formats.
     """
+    rgb_color: Union[Tuple[int, int, int], Tuple[int, int, int, int]]
+
     if isinstance(color, str):
         try:
-            parsed_color = getrgb(color)
+            rgb_color = getrgb(color)
         except ValueError:
             raise ValueError(
                 f"Unknown color '{color}'. See documentation for available colors."
             )
-        else:
-            color = parsed_color
+    else:
+        rgb_color = color
 
-    _rgba = np.array(list(color[:3]) + [int(255 * opacity)]).astype(int)
+    _rgba = np.array(list(rgb_color[:3]) + [int(255 * opacity)]).astype(int)
 
     if np.any(_rgba < 0) or np.any(_rgba > 255):
         raise ValueError(
