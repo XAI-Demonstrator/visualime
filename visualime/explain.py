@@ -209,11 +209,11 @@ def render_explanation(
         if coverage is not None:
             coverage /= 2
         if num_of_segments is not None:
-            num_of_segments //= 2
+            num_of_segments = max(num_of_segments // 2, 1)
         if min_num_of_segments is not None:
-            min_num_of_segments //= 2
+            min_num_of_segments = max(min_num_of_segments // 2, 0)
         if max_num_of_segments is not None:
-            max_num_of_segments //= 2
+            max_num_of_segments = max(max_num_of_segments // 2, 1)
 
     if positive is not None:
         positive_segments = select_segments(
