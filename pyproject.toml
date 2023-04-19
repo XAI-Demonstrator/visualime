@@ -43,7 +43,5 @@ module = [
     "sklearn.*",
     "skimage",
     "skimage.*",
-    "PIL",
-    "PIL.*"
 ]
 ignore_missing_imports = true
