@@ -58,3 +58,25 @@ def test_that_unknown_selection_method_raises_exception():
             num_of_samples=1,
             segment_selection_method="this-method-does-not-exist",
         )
+
+
+def test_that_either_coverage_or_num_of_segments_has_to_be_specified():
+    segment_mask = np.zeros((128, 128), dtype=int)
+    segment_weights = np.array([0])
+    with pytest.raises(ValueError):
+        _ = render_explanation(
+            image=image,
+            segment_mask=segment_mask,
+            segment_weights=segment_weights,
+            coverage=None,
+            num_of_segments=None,
+        )
+
+    with pytest.raises(ValueError):
+        _ = render_explanation(
+            image=image,
+            segment_mask=segment_mask,
+            segment_weights=segment_weights,
+            coverage=0.5,
+            num_of_segments=1,
+        )
