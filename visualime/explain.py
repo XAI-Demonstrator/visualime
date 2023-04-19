@@ -160,6 +160,9 @@ def render_explanation(
     or `num_of_segments` is reached.
     Exactly one of these parameters has to be specified when calling the function.
 
+    If both 'positive' and 'negative' colors are specified, the 'coverage' or
+    `num_of_segments` will be distributed evenly between the two classes of segments.
+
     Parameters
     ----------
     image : np.ndarray
