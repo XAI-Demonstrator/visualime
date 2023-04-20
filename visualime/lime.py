@@ -325,7 +325,7 @@ def weigh_segments(
     return segment_weights
 
 
-weigh_segments.__doc__ = f"""Generating list of coefficients to weigh segments.
+weigh_segments.__doc__ = f"""Generate the list of coefficients to weigh segments.
 
     Parameters
     ----------
