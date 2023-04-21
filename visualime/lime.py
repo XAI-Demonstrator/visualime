@@ -298,7 +298,7 @@ def weigh_segments(
     if segment_subset is not None:
         if min(segment_subset) < 0:
             raise ValueError("Indices in segment subset cannot be below 0.")
-        if max(segment_subset) > samples.shape[1]:
+        if max(segment_subset) >= samples.shape[1]:
             raise ValueError(
                 "Indices in segment subset exceed number of available segments."
             )
