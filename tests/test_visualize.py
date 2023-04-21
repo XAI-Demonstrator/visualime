@@ -39,7 +39,33 @@ def test_that_min_coverage_has_to_be_smaller_than_max_coverage():
         )
 
 
+def test_that_min_coverage_cannot_equal_max_coverage():
+    segment_mask = np.zeros((128, 128), dtype=int)
+    segment_weights = np.array([0])
+    with pytest.raises(ValueError):
+        _ = select_segments(
+            segment_mask=segment_mask,
+            segment_weights=segment_weights,
+            num_of_segments=1,
+            min_coverage=0.8,
+            max_coverage=0.8,
+        )
+
+
 def test_that_min_num_of_segments_has_to_be_smaller_than_max_num_of_segments():
+    segment_mask = np.zeros((128, 128), dtype=int)
+    segment_weights = np.array([0])
+    with pytest.raises(ValueError):
+        _ = select_segments(
+            segment_mask=segment_mask,
+            segment_weights=segment_weights,
+            coverage=0.5,
+            min_num_of_segments=15,
+            max_num_of_segments=5,
+        )
+
+
+def test_that_min_num_of_segments_cannot_equal_max_num_of_segments():
     segment_mask = np.zeros((128, 128), dtype=int)
     segment_weights = np.array([0])
     with pytest.raises(ValueError):
@@ -151,7 +177,10 @@ def test_that_selected_segments_are_colored():
         segment_mask=segment_mask, segments_to_color=[1, 3], color="blue", opacity=1.0
     )
 
+    # basic properties
     assert overlay.shape == (128, 128, 4)
+    assert np.min(overlay) == 0
+    assert np.max(overlay) == 255
     assert np.any(overlay[:, :, 3] == 255)
     # segment 1 is colored in blue
     assert np.all(overlay[5, 5:8, 2:4] == 255)
