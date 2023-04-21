@@ -12,12 +12,14 @@ from visualime.lime import (
     weigh_segments,
 )
 
-MAX_SEGMENT_INDEX = 25
+MAX_SEGMENT_INDEX = 24
 
 img_size_x, img_size_y = (224, 224)
 
 image = np.random.randint(0, 255, size=(img_size_x, img_size_y, 3))
-segment_mask = np.random.randint(0, MAX_SEGMENT_INDEX, size=(img_size_x, img_size_y))
+segment_mask = np.random.randint(
+    0, MAX_SEGMENT_INDEX + 1, size=(img_size_x, img_size_y)
+)
 samples = generate_samples(segment_mask, 100, p=0.5)
 
 
@@ -99,6 +101,15 @@ def test_that_subset_indices_cannot_be_below_zero():
 
 
 def test_that_subset_indices_cannot_be_outside_available_range():
+    assert samples.shape[1] == MAX_SEGMENT_INDEX + 1
+
+    _ = weigh_segments(
+        samples=samples,
+        predictions=np.zeros((samples.shape[0], 5)),
+        label_idx=0,
+        segment_subset=[0, 1, 2, MAX_SEGMENT_INDEX],
+    )
+
     with pytest.raises(ValueError):
         _ = weigh_segments(
             samples=samples,
