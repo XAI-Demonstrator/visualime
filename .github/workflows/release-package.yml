@@ -20,7 +20,7 @@ jobs:
           python-version: "3.11"
 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Remove irrelevant parts from README
         run: |
@@ -75,7 +75,7 @@ jobs:
           pip install visualime*.whl
 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: repository
 
