@@ -46,7 +46,7 @@ infeasible.
 images and aim to reduce the amount of data they need to process within the first few layers.)
 
 On the other hand, and that's arguably the even bigger problem,
-human's do not think and talk about images in pixels.
+humans do not think and talk about images in pixels.
 Instead, they see shapes, areas, objects, details.
 If we're looking to generate explanations that humans can understand and comprehend,
 they need to reflect that.
