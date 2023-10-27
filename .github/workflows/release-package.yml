@@ -98,7 +98,11 @@ jobs:
     needs:
       - test
     runs-on: ubuntu-latest
-    environment: PyPI
+    environment:
+      name: pypi
+      url: https://pypi.org/p/visualime
+    permissions:
+      id-token: write
     steps:
       - name: Download distribution
         uses: actions/download-artifact@v3
@@ -108,8 +112,6 @@ jobs:
       - name: Publish distribution 📦 to Test PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          user: __token__
-          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           repository_url: https://test.pypi.org/legacy/
           packages_dir: .
           verbose: true
@@ -117,7 +119,5 @@ jobs:
       - name: Publish distribution 📦 to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          user: __token__
-          password: ${{ secrets.PYPI_API_TOKEN }}
           packages_dir: .
           verbose: true
