@@ -1,3 +1,4 @@
+import warnings
 from typing import Any, Callable, Dict, List, Literal, Optional, Tuple, Union
 
 import numpy as np
@@ -321,6 +322,9 @@ def weigh_segments(
             for segment_idx in range(samples.shape[1])
         ]
     )
+
+    if np.all(segment_weights == 0.0):
+        warnings.warn("All weights are 0.")
 
     return segment_weights
 
