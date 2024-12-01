@@ -7,6 +7,7 @@ that exploits prior knowledge and Bayesian reasoning.
 [2] Ribeiro et al. (2016): *"Why Should I Trust You?": Explaining the Predictions of Any Classifier.*
 `arXiv:1602.04938 <https://arxiv.org/abs/1602.04938>`_
 """
+
 from warnings import warn
 
 from sklearn.linear_model import BayesianRidge

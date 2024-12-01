@@ -71,6 +71,7 @@ that is included as an example image in `scikit-image`.
 (You can :ref:`download this guide <sphx_glr_download_user_guide_image_segmentation.py>`
 and replace the following lines with your own image loading code.)
 """
+
 import matplotlib.pyplot as plt
 from skimage import data
 
